@@ -6,5 +6,6 @@
   "test": "jest --runInBand",
   "migrate:up": "node -r dotenv/config node_modules/.bin/node-pg-migrate up -m src/database/migrations",
   "migrate:down": "node -r dotenv/config node_modules/.bin/node-pg-migrate down -m src/database/migrations",
-  "migrate:create": "node-pg-migrate create -m src/database/migrations"
+  "migrate:create": "node-pg-migrate create -m src/database/migrations",
+  "seed": "node -r dotenv/config node_modules/.bin/ts-node src/database/seeds/seed.ts"
 }
