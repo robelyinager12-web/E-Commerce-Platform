@@ -7,7 +7,7 @@ const router = Router();
 
 router.get(
   "/",
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (_req, res) => {
     const result = await query<{ now: string }>("SELECT NOW() as now");
     sendSuccess(res, "API is healthy", {
       status: "ok",
