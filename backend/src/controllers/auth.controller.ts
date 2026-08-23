@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.util";
 import { sendSuccess } from "../utils/response.util";
 import { registerUser, loginUser, refreshAccessToken } from "../services/auth.service";
+import { mergeGuestCartIntoUser } from "../services/cart.service";
 import { ApiError } from "../utils/apiError.util";
 import { env } from "../config/env";
 
 const REFRESH_COOKIE_NAME = "refreshToken";
 const REFRESH_COOKIE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+const GUEST_CART_COOKIE_NAME = "guestCartId";
 
 function setRefreshCookie(res: Response, token: string): void {
   res.cookie(REFRESH_COOKIE_NAME, token, {
@@ -34,6 +36,14 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const result = await loginUser({ email, password });
+
+  // If the person had items in a guest cart before logging in, merge them
+  // into their account's cart so nothing gets lost.
+  const guestCartSessionId = req.cookies?.[GUEST_CART_COOKIE_NAME];
+  if (guestCartSessionId) {
+    await mergeGuestCartIntoUser(guestCartSessionId, result.user.id);
+    res.clearCookie(GUEST_CART_COOKIE_NAME);
+  }
 
   setRefreshCookie(res, result.refreshToken);
   sendSuccess(res, "Logged in successfully", {
