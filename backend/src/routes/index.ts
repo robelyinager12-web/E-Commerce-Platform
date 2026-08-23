@@ -6,6 +6,8 @@ import productRoutes from "./product.routes";
 import categoryRoutes from "./category.routes";
 import cartRoutes from "./cart.routes";
 import wishlistRoutes from "./wishlist.routes";
+import orderRoutes from "./order.routes";
+import addressRoutes from "./address.routes";
 
 const router = Router();
 
@@ -16,8 +18,7 @@ router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/cart", cartRoutes);
 router.use("/wishlist", wishlistRoutes);
-
-// Additional resource routes (orders, etc.) will be
-// mounted here in upcoming steps.
+router.use("/orders", orderRoutes);
+router.use("/addresses", addressRoutes);
 
 export default router;
