@@ -9,6 +9,7 @@ import wishlistRoutes from "./wishlist.routes";
 import orderRoutes from "./order.routes";
 import addressRoutes from "./address.routes";
 import reviewRoutes from "./review.routes";
+import analyticsRoutes from "./analytics.routes";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/wishlist", wishlistRoutes);
 router.use("/orders", orderRoutes);
 router.use("/addresses", addressRoutes);
 router.use("/reviews", reviewRoutes);
+router.use("/admin/analytics", analyticsRoutes);
 
 export default router;
