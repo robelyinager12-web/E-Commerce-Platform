@@ -13,6 +13,11 @@ import { OrderDetail } from "../pages/OrderDetail";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
+import { AdminRoute } from "../components/common/AdminRoute";
+import { AdminLayout } from "../layouts/AdminLayout";
+import { Dashboard } from "../pages/admin/Dashboard";
+import { AdminProducts } from "../pages/admin/AdminProducts";
+import { AdminOrders } from "../pages/admin/AdminOrders";
 
 export function AppRoutes() {
   return (
@@ -34,6 +39,14 @@ export function AppRoutes() {
         </Route>
 
         <Route path="*" element={<NotFound />} />
+      </Route>
+
+      <Route element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+        </Route>
       </Route>
     </Routes>
   );
