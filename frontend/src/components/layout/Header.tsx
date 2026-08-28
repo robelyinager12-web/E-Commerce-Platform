@@ -46,24 +46,26 @@ export function Header() {
               </span>
             )}
           </Link>
-          {user ? (
-            <div className="flex items-center gap-3">
-              <Link to="/account" className="text-ink/80 hover:text-teal">
-                {user.firstName}
-              </Link>
-              <button
-                onClick={() => void logout()}
-                className="text-ink/50 hover:text-ink"
-                type="button"
-              >
-                Sign out
-              </button>
-            </div>
-          ) : (
-            <Link to="/login" className="btn-primary !py-2">
-              Sign in
-            </Link>
-          )}
+          // inside the authenticated-user branch:
+{user ? (
+  <div className="flex items-center gap-3">
+    {["super_admin", "admin", "staff"].includes(user.role) && (
+      <Link to="/admin" className="text-ink/80 hover:text-teal">
+        Admin
+      </Link>
+    )}
+    <Link to="/account" className="text-ink/80 hover:text-teal">
+      {user.firstName}
+    </Link>
+    <button onClick={() => void logout()} className="text-ink/50 hover:text-ink" type="button">
+      Sign out
+    </button>
+  </div>
+) : (
+  <Link to="/login" className="btn-primary !py-2">
+    Sign in
+  </Link>
+)}
         </div>
       </div>
     </header>
