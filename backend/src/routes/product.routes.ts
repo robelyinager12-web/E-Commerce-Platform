@@ -17,6 +17,21 @@ import {
 } from "../controllers/product.controller";
 
 const router = Router();
+router.get(
+  "/admin/all",
+  authenticate,
+  requireRole("super_admin", "admin", "staff"),
+  getProductsAdmin
+);
+
+router.post(
+  "/admin/:id/reactivate",
+  authenticate,
+  requireRole("super_admin", "admin"),
+  productIdParamValidator,
+  validate,
+  postReactivateProduct
+);
 
 // --- Public ---
 router.get("/", listProductsValidator, validate, getProducts);

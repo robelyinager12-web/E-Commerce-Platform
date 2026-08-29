@@ -315,3 +315,63 @@ export async function deleteProduct(id: string): Promise<void> {
   // but hide it from the public catalog.
   await query("UPDATE products SET is_active = false WHERE id = $1", [id]);
 }
+export interface ProductListItemAdmin extends ProductListItem {
+  is_active: boolean;
+}
+
+export interface ListProductsAdminFilters {
+  search?: string;
+  isActive?: boolean;
+}
+
+export async function listProductsAdmin(
+  rawQuery: Record<string, unknown>,
+  filters: ListProductsAdminFilters
+): Promise<{ items: ProductListItemAdmin[]; meta: PaginationMeta }> {
+  const { page, limit, offset } = parsePagination(rawQuery);
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let paramIndex = 1;
+
+  if (filters.isActive !== undefined) {
+    conditions.push(`p.is_active = $${paramIndex}`);
+    params.push(filters.isActive);
+    paramIndex += 1;
+  }
+  if (filters.search) {
+    conditions.push(`(p.name ILIKE $${paramIndex} OR p.sku ILIKE $${paramIndex})`);
+    params.push(`%${filters.search}%`);
+    paramIndex += 1;
+  }
+
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  const countResult = await query<{ count: string }>(
+    `SELECT COUNT(*)::text as count FROM products p ${whereClause}`,
+    params
+  );
+  const totalItems = parseInt(countResult.rows[0].count, 10);
+
+  const dataParams = [...params, limit, offset];
+  const itemsResult = await query<ProductListItemAdmin>(
+    `SELECT
+       p.id, p.name, p.slug, p.base_price::text, p.sku, p.stock_quantity,
+       p.average_rating::text, p.is_active,
+       (SELECT image_url FROM product_images WHERE product_id = p.id AND is_primary = true LIMIT 1) as primary_image
+     FROM products p
+     ${whereClause}
+     ORDER BY p.created_at DESC
+     LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+    dataParams
+  );
+
+  return { items: itemsResult.rows, meta: buildPaginationMeta(page, limit, totalItems) };
+}
+
+export async function reactivateProduct(id: string): Promise<void> {
+  const result = await query("SELECT id FROM products WHERE id = $1", [id]);
+  if (result.rows.length === 0) {
+    throw ApiError.notFound("Product not found");
+  }
+  await query("UPDATE products SET is_active = true WHERE id = $1", [id]);
+}

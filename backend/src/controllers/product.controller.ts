@@ -59,3 +59,16 @@ export const removeProduct = asyncHandler(async (req: Request, res: Response) =>
   await deleteProduct(req.params.id);
   sendSuccess(res, "Product deactivated successfully");
 });
+export const getProductsAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const filters: ListProductsAdminFilters = {
+    search: req.query.search as string | undefined,
+    isActive: req.query.isActive === undefined ? undefined : req.query.isActive === "true",
+  };
+  const { items, meta } = await listProductsAdmin(req.query as Record<string, unknown>, filters);
+  sendSuccess(res, "Products retrieved", { items, meta });
+});
+
+export const postReactivateProduct = asyncHandler(async (req: Request, res: Response) => {
+  await reactivateProduct(req.params.id);
+  sendSuccess(res, "Product reactivated successfully");
+});
