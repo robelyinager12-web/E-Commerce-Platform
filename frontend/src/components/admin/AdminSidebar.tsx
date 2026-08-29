@@ -3,7 +3,9 @@ import { NavLink } from "react-router-dom";
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard", end: true },
   { to: "/admin/products", label: "Products" },
+  { to: "/admin/categories", label: "Categories" },
   { to: "/admin/orders", label: "Orders" },
+  { to: "/admin/coupons", label: "Coupons" },
 ];
 
 export function AdminSidebar() {

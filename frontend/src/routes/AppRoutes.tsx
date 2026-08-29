@@ -17,7 +17,9 @@ import { AdminRoute } from "../components/common/AdminRoute";
 import { AdminLayout } from "../layouts/AdminLayout";
 import { Dashboard } from "../pages/admin/Dashboard";
 import { AdminProducts } from "../pages/admin/AdminProducts";
+import { AdminCategories } from "../pages/admin/AdminCategories";
 import { AdminOrders } from "../pages/admin/AdminOrders";
+import { AdminCoupons } from "../pages/admin/AdminCoupons";
 
 export function AppRoutes() {
   return (
@@ -45,7 +47,9 @@ export function AppRoutes() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="products" element={<AdminProducts />} />
+          <Route path="categories" element={<AdminCategories />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="coupons" element={<AdminCoupons />} />
         </Route>
       </Route>
     </Routes>
