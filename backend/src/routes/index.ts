@@ -11,6 +11,7 @@ import addressRoutes from "./address.routes";
 import reviewRoutes from "./review.routes";
 import analyticsRoutes from "./analytics.routes";
 import couponRoutes from "./coupon.routes";
+import notificationRoutes from "./notification.routes";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/addresses", addressRoutes);
 router.use("/reviews", reviewRoutes);
 router.use("/admin/analytics", analyticsRoutes);
 router.use("/coupons", couponRoutes);
+router.use("/notifications", notificationRoutes);
 
 export default router;
