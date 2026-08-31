@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import { NotificationBell } from "./NotificationBell";
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -13,6 +14,7 @@ export function Header() {
           <div className="font-display text-2xl font-semibold tracking-tight text-ink">
             Aurora Market
           </div>
+          {/* Signature element: thin double-rule under the wordmark */}
           <div className="mt-1 flex flex-col gap-[3px]">
             <span className="block h-px w-full bg-ink/70" />
             <span className="block h-px w-2/3 bg-ink/30" />
@@ -46,26 +48,30 @@ export function Header() {
               </span>
             )}
           </Link>
-          // inside the authenticated-user branch:
-{user ? (
-  <div className="flex items-center gap-3">
-    {["super_admin", "admin", "staff"].includes(user.role) && (
-      <Link to="/admin" className="text-ink/80 hover:text-teal">
-        Admin
-      </Link>
-    )}
-    <Link to="/account" className="text-ink/80 hover:text-teal">
-      {user.firstName}
-    </Link>
-    <button onClick={() => void logout()} className="text-ink/50 hover:text-ink" type="button">
-      Sign out
-    </button>
-  </div>
-) : (
-  <Link to="/login" className="btn-primary !py-2">
-    Sign in
-  </Link>
-)}
+          {user ? (
+            <div className="flex items-center gap-3">
+              <NotificationBell />
+              {["super_admin", "admin", "staff"].includes(user.role) && (
+                <Link to="/admin" className="text-ink/80 hover:text-teal">
+                  Admin
+                </Link>
+              )}
+              <Link to="/account" className="text-ink/80 hover:text-teal">
+                {user.firstName}
+              </Link>
+              <button
+                onClick={() => void logout()}
+                className="text-ink/50 hover:text-ink"
+                type="button"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="btn-primary !py-2">
+              Sign in
+            </Link>
+          )}
         </div>
       </div>
     </header>
