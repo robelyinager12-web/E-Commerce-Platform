@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { fetchAllOrdersAdmin, updateOrderStatusAdmin } from "../../services/order.service";
 import { OrderSummary, PaginationMeta } from "../../types/order.types";
 import { OrderStatusBadge } from "../../components/common/OrderStatusBadge";
@@ -15,8 +16,6 @@ const STATUS_OPTIONS = [
   "refunded",
 ];
 
-// Mirrors the backend's status state machine (order.service.ts, Step 7) so
-// the dropdown only ever offers transitions that will actually succeed.
 const VALID_TRANSITIONS: Record<string, string[]> = {
   pending: ["confirmed", "cancelled"],
   confirmed: ["processing", "cancelled"],
@@ -111,7 +110,11 @@ export function AdminOrders() {
                   const nextOptions = VALID_TRANSITIONS[order.status] ?? [];
                   return (
                     <tr key={order.id}>
-                      <td className="px-4 py-3 font-mono text-xs text-ink">{order.order_number}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-ink">
+                        <Link to={`/admin/orders/${order.id}`} className="hover:text-teal hover:underline">
+                          {order.order_number}
+                        </Link>
+                      </td>
                       <td className="px-4 py-3 text-muted">{formatDate(order.created_at)}</td>
                       <td className="price-tag px-4 py-3">${order.total_amount}</td>
                       <td className="px-4 py-3">

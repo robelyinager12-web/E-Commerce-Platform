@@ -19,6 +19,7 @@ import { Dashboard } from "../pages/admin/Dashboard";
 import { AdminProducts } from "../pages/admin/AdminProducts";
 import { AdminCategories } from "../pages/admin/AdminCategories";
 import { AdminOrders } from "../pages/admin/AdminOrders";
+import { AdminOrderDetail } from "../pages/admin/AdminOrderDetail";
 import { AdminCoupons } from "../pages/admin/AdminCoupons";
 
 export function AppRoutes() {
@@ -49,6 +50,7 @@ export function AppRoutes() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetail />} />
           <Route path="coupons" element={<AdminCoupons />} />
         </Route>
       </Route>

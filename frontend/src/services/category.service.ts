@@ -1,9 +1,9 @@
-import { api, ApiResponse } from "./api";
+import { api } from "./api";
 import { Category } from "../types/category.types";
 
 export async function fetchCategories(): Promise<Category[]> {
-  const response = await api.get<ApiResponse<Category[]>>("/categories");
-  return response.data.data;
+  const response = await api.get("/categories");
+  return response.data.data as Category[];
 }
 
 // --- Admin ---
@@ -16,16 +16,16 @@ export interface CategoryInput {
 }
 
 export async function createCategoryAdmin(input: CategoryInput): Promise<Category> {
-  const response = await api.post<ApiResponse<Category>>("/categories", input);
-  return response.data.data;
+  const response = await api.post("/categories", input);
+  return response.data.data as Category;
 }
 
 export async function updateCategoryAdmin(
   id: string,
   input: Partial<CategoryInput> & { isActive?: boolean }
 ): Promise<Category> {
-  const response = await api.patch<ApiResponse<Category>>(`/categories/${id}`, input);
-  return response.data.data;
+  const response = await api.patch(`/categories/${id}`, input);
+  return response.data.data as Category;
 }
 
 export async function deleteCategoryAdmin(id: string): Promise<void> {
@@ -33,8 +33,8 @@ export async function deleteCategoryAdmin(id: string): Promise<void> {
 }
 
 export async function fetchCategoriesAdmin(): Promise<Category[]> {
-  const response = await api.get<ApiResponse<Category[]>>("/categories/admin/all");
-  return response.data.data;
+  const response = await api.get("/categories/admin/all");
+  return response.data.data as Category[];
 }
 
 export async function reactivateCategoryAdmin(id: string): Promise<void> {

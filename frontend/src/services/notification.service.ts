@@ -1,14 +1,18 @@
-import { api, ApiResponse } from "./api";
+import { api } from "./api";
 import { Notification } from "../types/notification.types";
 import { PaginationMeta } from "../types/product.types";
 
+interface NotificationsResponse {
+  items: Notification[];
+  meta: PaginationMeta;
+  unreadCount: number;
+}
+
 export async function fetchNotifications(
   unreadOnly = false
-): Promise<{ items: Notification[]; meta: PaginationMeta; unreadCount: number }> {
-  const response = await api.get
-    ApiResponse<{ items: Notification[]; meta: PaginationMeta; unreadCount: number }>
-  >("/notifications", { params: { unreadOnly } });
-  return response.data.data;
+): Promise<NotificationsResponse> {
+  const response = await api.get("/notifications", { params: { unreadOnly } });
+  return response.data.data as NotificationsResponse;
 }
 
 export async function markNotificationRead(id: string): Promise<void> {

@@ -1,30 +1,29 @@
 import { useEffect, useState, useCallback } from "react";
 import {
-  fetchProducts,
+  fetchProductsAdmin,
   fetchProductBySlug,
   createProductAdmin,
   updateProductAdmin,
   deactivateProductAdmin,
+  reactivateProductAdmin,
+  ProductListItemAdmin,
 } from "../../services/product.service";
-import { ProductListItem, ProductDetail } from "../../types/product.types";
+import { ProductDetail } from "../../types/product.types";
 import { AdminProductForm } from "../../components/admin/AdminProductForm";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 type FormMode = { kind: "closed" } | { kind: "create" } | { kind: "edit"; product: ProductDetail };
 
 export function AdminProducts() {
-  const [products, setProducts] = useState<ProductListItem[]>([]);
+  const [products, setProducts] = useState<ProductListItemAdmin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<FormMode>({ kind: "closed" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [deactivatingId, setDeactivatingId] = useState<string | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   const loadProducts = useCallback(async () => {
-    // Note: this reuses the public catalog listing, which always filters
-    // to active products — a deactivated product will disappear from this
-    // list too (there's currently no "show inactive" admin endpoint).
-    const { items } = await fetchProducts({ limit: 100 });
+    const { items } = await fetchProductsAdmin();
     setProducts(items);
   }, []);
 
@@ -73,7 +72,7 @@ export function AdminProducts() {
     }
   }
 
-  async function handleEditClick(product: ProductListItem) {
+  async function handleEditClick(product: ProductListItemAdmin) {
     setError(null);
     try {
       const detail = await fetchProductBySlug(product.slug);
@@ -85,7 +84,7 @@ export function AdminProducts() {
 
   async function handleDeactivate(id: string) {
     if (!confirm("Deactivate this product? It will be hidden from the storefront.")) return;
-    setDeactivatingId(id);
+    setPendingId(id);
     setError(null);
     try {
       await deactivateProductAdmin(id);
@@ -93,7 +92,20 @@ export function AdminProducts() {
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
-      setDeactivatingId(null);
+      setPendingId(null);
+    }
+  }
+
+  async function handleReactivate(id: string) {
+    setPendingId(id);
+    setError(null);
+    try {
+      await reactivateProductAdmin(id);
+      await loadProducts();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setPendingId(null);
     }
   }
 
@@ -146,16 +158,26 @@ export function AdminProducts() {
                 <th className="px-4 py-3">SKU</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Stock</th>
+                <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">
               {products.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.id} className={product.is_active ? "" : "opacity-60"}>
                   <td className="px-4 py-3 text-ink">{product.name}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted">{product.sku}</td>
                   <td className="price-tag px-4 py-3">${product.base_price}</td>
                   <td className="px-4 py-3">{product.stock_quantity}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-sm px-2 py-1 font-mono text-xs uppercase ${
+                        product.is_active ? "bg-teal-light text-teal-dark" : "bg-hairline text-ink/60"
+                      }`}
+                    >
+                      {product.is_active ? "Active" : "Inactive"}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       type="button"
@@ -164,14 +186,25 @@ export function AdminProducts() {
                     >
                       Edit
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeactivate(product.id)}
-                      disabled={deactivatingId === product.id}
-                      className="text-muted hover:text-red-700 disabled:opacity-50"
-                    >
-                      {deactivatingId === product.id ? "…" : "Deactivate"}
-                    </button>
+                    {product.is_active ? (
+                      <button
+                        type="button"
+                        onClick={() => handleDeactivate(product.id)}
+                        disabled={pendingId === product.id}
+                        className="text-muted hover:text-red-700 disabled:opacity-50"
+                      >
+                        {pendingId === product.id ? "…" : "Deactivate"}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleReactivate(product.id)}
+                        disabled={pendingId === product.id}
+                        className="text-teal hover:underline disabled:opacity-50"
+                      >
+                        {pendingId === product.id ? "…" : "Reactivate"}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
