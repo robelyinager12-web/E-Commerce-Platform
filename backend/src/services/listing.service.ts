@@ -2,6 +2,7 @@ import { query, withTransaction } from "../config/database";
 import { slugify } from "../utils/slugify.util";
 import { parsePagination, buildPaginationMeta, PaginationMeta } from "../utils/pagination.util";
 import { ApiError } from "../utils/apiError.util";
+import { getSellerRatingSummary } from "./sellerReview.service";
 
 export interface ListingListItem {
   id: string;
@@ -16,20 +17,34 @@ export interface ListingListItem {
   primary_image: string | null;
 }
 
+export interface ListingImage {
+  id: string;
+  image_url: string;
+  is_primary: boolean;
+  display_order: number;
+}
+
 export interface ListingDetail extends ListingListItem {
   description: string | null;
   views_count: number;
   updated_at: string;
   category: { id: string; name: string; slug: string };
-  images: { id: string; image_url: string; is_primary: boolean; display_order: number }[];
+  images: ListingImage[];
   seller: {
     id: string;
     firstName: string;
     lastName: string;
-    phone: string | null;
-    email: string;
     memberSince: string;
+    averageRating: string;
+    reviewCount: number;
   };
+}
+
+export interface SellerContact {
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  email: string;
 }
 
 export interface ListListingsFilters {
@@ -43,14 +58,35 @@ export interface ListListingsFilters {
   sort?: "newest" | "price_asc" | "price_desc";
 }
 
+interface ListingDetailRow {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  price: string;
+  condition: string;
+  region: string;
+  city: string;
+  status: string;
+  views_count: number;
+  created_at: string;
+  updated_at: string;
+  category_id: string;
+  category_name: string;
+  category_slug: string;
+  seller_id: string;
+  first_name: string;
+  last_name: string;
+  seller_created_at: string;
+}
+
 async function generateUniqueSlug(title: string, excludeId?: string): Promise<string> {
   const base = slugify(title);
   let candidate = base;
   let suffix = 1;
   for (;;) {
     const result = await query("SELECT id FROM listings WHERE slug = $1", [candidate]);
-    const rows = result.rows as { id: string }[];
-    const clash = rows[0];
+    const clash = (result.rows as { id: string }[])[0];
     if (!clash || clash.id === excludeId) return candidate;
     suffix += 1;
     candidate = `${base}-${suffix}`;
@@ -113,7 +149,10 @@ export async function listListings(
   };
   const orderBy = sortMap[filters.sort ?? "newest"] ?? sortMap.newest;
 
-  const countResult = await query(`SELECT COUNT(*)::text as count FROM listings l ${whereClause}`, params);
+  const countResult = await query(
+    `SELECT COUNT(*)::text as count FROM listings l ${whereClause}`,
+    params
+  );
   const totalItems = parseInt((countResult.rows as { count: string }[])[0].count, 10);
 
   const itemsResult = await query(
@@ -139,14 +178,14 @@ export async function getListingBySlug(slug: string, requireActive = true): Prom
        l.id, l.title, l.slug, l.description, l.price::text, l.condition, l.region, l.city,
        l.status, l.views_count, l.created_at, l.updated_at,
        c.id as category_id, c.name as category_name, c.slug as category_slug,
-       u.id as seller_id, u.first_name, u.last_name, u.phone, u.email, u.created_at as seller_created_at
+       u.id as seller_id, u.first_name, u.last_name, u.created_at as seller_created_at
      FROM listings l
      JOIN categories c ON c.id = l.category_id
      JOIN users u ON u.id = l.user_id
      WHERE l.slug = $1`,
     [slug]
   );
-  const row = (result.rows as any[])[0];
+  const row = (result.rows as ListingDetailRow[])[0];
   if (!row || (requireActive && row.status !== "active")) {
     throw ApiError.notFound("Listing not found");
   }
@@ -156,6 +195,9 @@ export async function getListingBySlug(slug: string, requireActive = true): Prom
      WHERE listing_id = $1 ORDER BY display_order ASC`,
     [row.id]
   );
+  const images = imagesResult.rows as ListingImage[];
+  const primary = images.find((img) => img.is_primary) ?? images[0];
+  const rating = await getSellerRatingSummary(row.seller_id);
 
   return {
     id: row.id,
@@ -170,17 +212,46 @@ export async function getListingBySlug(slug: string, requireActive = true): Prom
     views_count: row.views_count,
     created_at: row.created_at,
     updated_at: row.updated_at,
-    primary_image: null,
+    primary_image: primary ? primary.image_url : null,
     category: { id: row.category_id, name: row.category_name, slug: row.category_slug },
-    images: imagesResult.rows as ListingDetail["images"],
+    images,
     seller: {
       id: row.seller_id,
       firstName: row.first_name,
       lastName: row.last_name,
-      phone: row.phone,
-      email: row.email,
       memberSince: row.seller_created_at,
+      averageRating: rating.averageRating,
+      reviewCount: rating.reviewCount,
     },
+  };
+}
+
+/**
+ * Contact details are only handed out through this function (behind
+ * authentication and a rate limit), never on the public listing response.
+ */
+export async function getSellerContact(listingId: string): Promise<SellerContact> {
+  const result = await query(
+    `SELECT u.first_name, u.last_name, u.phone, u.email
+     FROM listings l
+     JOIN users u ON u.id = l.user_id
+     WHERE l.id = $1 AND l.status = 'active'`,
+    [listingId]
+  );
+  const row = (result.rows as {
+    first_name: string;
+    last_name: string;
+    phone: string | null;
+    email: string;
+  }[])[0];
+  if (!row) {
+    throw ApiError.notFound("Listing not found");
+  }
+  return {
+    firstName: row.first_name,
+    lastName: row.last_name,
+    phone: row.phone,
+    email: row.email,
   };
 }
 
@@ -246,12 +317,11 @@ async function getListingById(id: string): Promise<ListingDetail> {
   return getListingBySlug((result.rows as { slug: string }[])[0].slug, false);
 }
 
-async function assertOwnership(userId: string, listingId: string): Promise<string> {
-  const result = await query("SELECT user_id, slug FROM listings WHERE id = $1", [listingId]);
-  const row = (result.rows as { user_id: string; slug: string }[])[0];
+async function assertOwnership(userId: string, listingId: string): Promise<void> {
+  const result = await query("SELECT user_id FROM listings WHERE id = $1", [listingId]);
+  const row = (result.rows as { user_id: string }[])[0];
   if (!row) throw ApiError.notFound("Listing not found");
   if (row.user_id !== userId) throw ApiError.forbidden("You can only manage your own listings");
-  return row.slug;
 }
 
 export async function updateListing(
