@@ -7,6 +7,9 @@ import listingRoutes from "./listing.routes";
 import savedListingRoutes from "./savedListing.routes";
 import sellerReviewRoutes from "./sellerReview.routes";
 import notificationRoutes from "./notification.routes";
+import adminReportsRoutes from "./adminReports.routes";
+import adminUserRoutes from "./adminUser.routes";
+import analyticsRoutes from "./analytics.routes";
 
 const router = Router();
 
@@ -18,7 +21,8 @@ router.use("/listings", listingRoutes);
 router.use("/saved-listings", savedListingRoutes);
 router.use("/sellers", sellerReviewRoutes);
 router.use("/notifications", notificationRoutes);
-
-// Admin moderation and listing analytics are added in Step 4.
+router.use("/admin/reports", adminReportsRoutes);
+router.use("/admin/users", adminUserRoutes);
+router.use("/admin/analytics", analyticsRoutes);
 
 export default router;
