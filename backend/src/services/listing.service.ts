@@ -389,3 +389,70 @@ export async function listMyListings(userId: string): Promise<ListingListItem[]>
   );
   return result.rows as ListingListItem[];
 }
+// --- Admin ---
+
+export interface ListListingsAdminFilters {
+  status?: "active" | "sold" | "expired" | "removed";
+  search?: string;
+}
+
+export async function listListingsAdmin(
+  rawQuery: Record<string, unknown>,
+  filters: ListListingsAdminFilters
+): Promise<{ items: (ListingListItem & { seller_name: string })[]; meta: PaginationMeta }> {
+  const { page, limit, offset } = parsePagination(rawQuery);
+
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  let i = 1;
+
+  if (filters.status) {
+    conditions.push(`l.status = $${i}::listing_status`);
+    params.push(filters.status);
+    i += 1;
+  }
+  if (filters.search) {
+    conditions.push(`l.title ILIKE $${i}`);
+    params.push(`%${filters.search}%`);
+    i += 1;
+  }
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  const countResult = await query(
+    `SELECT COUNT(*)::text as count FROM listings l ${whereClause}`,
+    params
+  );
+  const totalItems = parseInt((countResult.rows as { count: string }[])[0].count, 10);
+
+  const itemsResult = await query(
+    `SELECT
+       l.id, l.title, l.slug, l.price::text, l.condition, l.region, l.city, l.status, l.created_at,
+       CONCAT(u.first_name, ' ', u.last_name) as seller_name,
+       (SELECT image_url FROM listing_images WHERE listing_id = l.id AND is_primary = true LIMIT 1) as primary_image
+     FROM listings l
+     JOIN users u ON u.id = l.user_id
+     ${whereClause}
+     ORDER BY l.created_at DESC
+     LIMIT $${i} OFFSET $${i + 1}`,
+    [...params, limit, offset]
+  );
+
+  return {
+    items: itemsResult.rows as (ListingListItem & { seller_name: string })[],
+    meta: buildPaginationMeta(page, limit, totalItems),
+  };
+}
+
+/** Admin override: change any listing's status regardless of ownership. */
+export async function adminSetListingStatus(
+  listingId: string,
+  status: "active" | "sold" | "expired" | "removed"
+): Promise<void> {
+  const result = await query("UPDATE listings SET status = $1::listing_status WHERE id = $2", [
+    status,
+    listingId,
+  ]);
+  if (result.rowCount === 0) {
+    throw ApiError.notFound("Listing not found");
+  }
+}

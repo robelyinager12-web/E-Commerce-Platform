@@ -78,3 +78,26 @@ export const getMyListings = asyncHandler(async (req: Request, res: Response) =>
   const listings = await listMyListings(req.user!.userId);
   sendSuccess(res, "Your listings retrieved", listings);
 });
+import { listListingsAdmin, adminSetListingStatus } from "../services/listing.service";
+import { logAudit } from "../utils/audit.util";
+
+export const getListingsAdmin = asyncHandler(async (req: Request, res: Response) => {
+  const filters = {
+    status: req.query.status as "active" | "sold" | "expired" | "removed" | undefined,
+    search: req.query.search as string | undefined,
+  };
+  const { items, meta } = await listListingsAdmin(req.query as Record<string, unknown>, filters);
+  sendSuccess(res, "Listings retrieved", { items, meta });
+});
+
+export const patchListingStatusAdmin = asyncHandler(async (req: Request, res: Response) => {
+  await adminSetListingStatus(req.params.id, req.body.status);
+  await logAudit({
+    userId: req.user!.userId,
+    action: "ADMIN_LISTING_STATUS_CHANGED",
+    entityType: "listing",
+    entityId: req.params.id,
+    metadata: { newStatus: req.body.status },
+  });
+  sendSuccess(res, "Listing status updated");
+});

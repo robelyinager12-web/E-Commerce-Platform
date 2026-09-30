@@ -37,3 +37,7 @@ export const listListingsValidator = [
   query("condition").optional().isIn(["new", "used"]),
   query("sort").optional().isIn(["newest", "price_asc", "price_desc"]),
 ];
+export const adminListingStatusValidator = [
+  param("id").isUUID().withMessage("Invalid listing id"),
+  body("status").isIn(["active", "sold", "expired", "removed"]).withMessage("Invalid status"),
+];
