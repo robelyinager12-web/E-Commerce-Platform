@@ -2,10 +2,10 @@ import { NavLink } from "react-router-dom";
 
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard", end: true },
-  { to: "/admin/products", label: "Products" },
+  { to: "/admin/listings", label: "Listings" },
   { to: "/admin/categories", label: "Categories" },
-  { to: "/admin/orders", label: "Orders" },
-  { to: "/admin/coupons", label: "Coupons" },
+  { to: "/admin/reports", label: "Reports" },
+  { to: "/admin/users", label: "Users" },
 ];
 
 export function AdminSidebar() {

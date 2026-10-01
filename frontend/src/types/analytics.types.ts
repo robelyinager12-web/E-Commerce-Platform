@@ -1,39 +1,21 @@
 export interface OverviewStats {
-  totalRevenue: string;
-  totalOrders: number;
-  revenueOrders: number;
-  averageOrderValue: string;
-  totalCustomers: number;
-  newCustomers: number;
-  lowStockCount: number;
-  rangeFrom: string;
-  rangeTo: string;
+  activeListings: number;
+  totalListingsAllTime: number;
+  totalUsers: number;
+  newUsers30d: number;
+  pendingReports: number;
 }
 
-export interface SalesOverTimePoint {
-  period: string;
-  revenue: string;
-  orderCount: number;
+export interface CategoryBreakdown {
+  categoryName: string;
+  categorySlug: string;
+  listingCount: number;
 }
 
-export interface TopProduct {
-  productId: string;
-  name: string;
-  slug: string;
-  unitsSold: number;
-  revenue: string;
-}
-
-export interface LowStockProduct {
-  id: string;
-  name: string;
-  slug: string;
-  sku: string;
-  stockQuantity: number;
-  lowStockThreshold: number;
-}
-
-export interface OrderStatusCount {
-  status: string;
-  count: number;
+export interface TopSeller {
+  sellerId: string;
+  sellerName: string;
+  activeListings: number;
+  totalViews: number;
+  averageRating: string;
 }

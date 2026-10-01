@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
+import { SavedListingsProvider } from "./context/SavedListingsContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { AppRoutes } from "./routes/AppRoutes";
 
@@ -8,11 +8,11 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
+        <SavedListingsProvider>
           <NotificationProvider>
             <AppRoutes />
           </NotificationProvider>
-        </CartProvider>
+        </SavedListingsProvider>
       </AuthProvider>
     </BrowserRouter>
   );

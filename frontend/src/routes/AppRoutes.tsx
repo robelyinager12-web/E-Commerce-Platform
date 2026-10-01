@@ -3,24 +3,23 @@ import { MainLayout } from "../layouts/MainLayout";
 import { Home } from "../pages/Home";
 import { Login } from "../pages/Login";
 import { Register } from "../pages/Register";
-import { ProductListing } from "../pages/ProductListing";
-import { ProductDetail } from "../pages/ProductDetail";
-import { Cart } from "../pages/Cart";
-import { Wishlist } from "../pages/Wishlist";
-import { Checkout } from "../pages/Checkout";
-import { OrderHistory } from "../pages/OrderHistory";
-import { OrderDetail } from "../pages/OrderDetail";
+import { ListingBrowse } from "../pages/ListingBrowse";
+import { ListingDetail } from "../pages/ListingDetail";
+import { PostListing } from "../pages/PostListing";
+import { EditListing } from "../pages/EditListing";
+import { MyListings } from "../pages/MyListings";
+import { SavedListings } from "../pages/SavedListings";
+import { SellerProfile } from "../pages/SellerProfile";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 import { AdminRoute } from "../components/common/AdminRoute";
 import { AdminLayout } from "../layouts/AdminLayout";
 import { Dashboard } from "../pages/admin/Dashboard";
-import { AdminProducts } from "../pages/admin/AdminProducts";
+import { AdminListings } from "../pages/admin/AdminListings";
 import { AdminCategories } from "../pages/admin/AdminCategories";
-import { AdminOrders } from "../pages/admin/AdminOrders";
-import { AdminOrderDetail } from "../pages/admin/AdminOrderDetail";
-import { AdminCoupons } from "../pages/admin/AdminCoupons";
+import { AdminReports } from "../pages/admin/AdminReports";
+import { AdminUsers } from "../pages/admin/AdminUsers";
 
 export function AppRoutes() {
   return (
@@ -29,15 +28,15 @@ export function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/products" element={<ProductListing />} />
-        <Route path="/products/:slug" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/listings" element={<ListingBrowse />} />
+        <Route path="/listings/:slug" element={<ListingDetail />} />
+        <Route path="/sellers/:sellerId" element={<SellerProfile />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orders" element={<OrderHistory />} />
-          <Route path="/orders/:id" element={<OrderDetail />} />
+          <Route path="/listings/new" element={<PostListing />} />
+          <Route path="/listings/:slug/edit" element={<EditListing />} />
+          <Route path="/listings/mine" element={<MyListings />} />
+          <Route path="/saved" element={<SavedListings />} />
           <Route path="/account" element={<Account />} />
         </Route>
 
@@ -47,11 +46,10 @@ export function AppRoutes() {
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="products" element={<AdminProducts />} />
+          <Route path="listings" element={<AdminListings />} />
           <Route path="categories" element={<AdminCategories />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="orders/:id" element={<AdminOrderDetail />} />
-          <Route path="coupons" element={<AdminCoupons />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="users" element={<AdminUsers />} />
         </Route>
       </Route>
     </Routes>
