@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { useLanguage } from "../../context/LanguageContext";
-import { LANGUAGES } from "../../../i18n/translations";
+import { LANGUAGES } from "../../i18n/translations";
 import { CheckIcon, ChevronDownIcon, GlobeIcon } from "./Icons";
 import { useDismiss } from "./useDismiss";
 

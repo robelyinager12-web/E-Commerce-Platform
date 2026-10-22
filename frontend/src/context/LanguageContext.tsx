@@ -7,7 +7,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { Language, LANGUAGES, TranslationKey, translations } from "../../i18n/translations";
+import { Language, LANGUAGES, TranslationKey, translations } from "../i18n/translations";
 
 const STORAGE_KEY = "aurora.language";
 

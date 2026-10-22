@@ -8,7 +8,6 @@ import { Category } from "../../types/category.types";
 import { LANGUAGES } from "../../i18n/translations";
 import { NotificationBell } from "./NotificationBell";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { CategoryStrip } from "./CategoryStrip";
 import { NavSearch } from "./NavSearch";
 import { useDismiss } from "./useDismiss";
 import {
@@ -24,31 +23,14 @@ import {
 const STAFF_ROLES = ["super_admin", "admin", "staff"];
 
 function Brand() {
+  const { t } = useLanguage();
   return (
-    <Link to="/" className="group shrink-0">
+    <Link to="/" className="shrink-0 leading-tight">
       <div className="font-display text-2xl font-semibold tracking-tight text-ink">
         Aurora Market
       </div>
-      <div className="mt-1 flex flex-col gap-[3px]">
-        <span className="block h-px w-full bg-ink/70" />
-        <span className="block h-px w-2/3 bg-ink/30" />
-      </div>
+      <p className="hidden font-sans text-[11px] text-muted md:block">{t("tagline")}</p>
     </Link>
-  );
-}
-
-/** Thin utility bar above the header (hidden on phones). */
-function TopBar() {
-  const { t } = useLanguage();
-  return (
-    <div className="hidden bg-ink text-paper sm:block">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-1.5 font-sans text-xs sm:px-6">
-        <p className="text-paper/80">{t("topBarTagline")}</p>
-        <Link to="/listings/new" className="font-medium text-gold-light hover:underline">
-          {t("sellOnAurora")}
-        </Link>
-      </div>
-    </div>
   );
 }
 
@@ -170,10 +152,6 @@ function MobilePanel({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="max-h-[calc(100vh-8rem)] overflow-y-auto border-t border-hairline bg-white px-4 pb-6 lg:hidden">
-      <Link to="/listings/new" onClick={onClose} className="btn-primary mt-4 w-full gap-1.5">
-        <PlusIcon /> {t("postAd")}
-      </Link>
-
       <p className={heading}>{t("categories")}</p>
       <Link to="/listings" onClick={onClose} className={`${linkClass} font-medium text-teal`}>
         {t("allCategories")}
@@ -274,70 +252,67 @@ export function Navbar() {
     "flex h-9 w-9 items-center justify-center rounded-sm text-ink/80 hover:bg-teal-light hover:text-teal";
 
   return (
-    <>
-      <TopBar />
-      <header className="sticky top-0 z-30 border-b border-hairline bg-paper">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6 lg:gap-6">
-          <Brand />
+    <header className="sticky top-0 z-30 border-b border-hairline bg-paper">
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-5">
+        <Brand />
 
-          {/* Desktop search */}
-          <div className="hidden min-w-0 flex-1 lg:block">
-            <NavSearch />
+        {/* Desktop search (region + keywords) */}
+        <div className="hidden min-w-0 flex-1 lg:block">
+          <NavSearch />
+        </div>
+
+        {/* Right-hand actions */}
+        <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
+          <div className="hidden lg:block">
+            <LanguageSwitcher />
           </div>
 
-          {/* Right-hand actions */}
-          <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
+          {user && (
+            <>
+              <SavedLink />
+              <NotificationBell />
+            </>
+          )}
+
+          {user ? (
             <div className="hidden lg:block">
-              <LanguageSwitcher />
+              <UserMenu />
             </div>
-
-            {user && (
-              <>
-                <SavedLink />
-                <NotificationBell />
-                <Link to="/listings/new" className="btn-primary !hidden !gap-1.5 !py-2 lg:!inline-flex">
-                  <PlusIcon /> {t("postAd")}
-                </Link>
-                <div className="hidden lg:block">
-                  <UserMenu />
-                </div>
-              </>
-            )}
-
-            {!user && (
-              <div className="hidden items-center gap-2 lg:flex">
-                <Link to="/register" className="btn-secondary !py-2">
-                  {t("register")}
-                </Link>
-                <Link to="/login" className="btn-primary !py-2">
-                  {t("signIn")}
-                </Link>
-              </div>
-            )}
-
-            {/* Mobile / tablet menu toggle */}
-            <button
-              type="button"
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-expanded={menuOpen}
-              aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
-              className={`${iconBtn} lg:hidden`}
+          ) : (
+            <Link
+              to="/login"
+              className="hidden px-3 py-2 font-sans text-sm font-medium text-ink/80 hover:text-teal lg:block"
             >
-              {menuOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
-          </div>
+              {t("signIn")}
+            </Link>
+          )}
+
+          <Link
+            to="/listings/new"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-gold px-4 py-2 font-sans text-sm font-semibold text-paper transition-colors hover:bg-gold-dark"
+          >
+            <PlusIcon /> {t("sell")}
+          </Link>
+
+          {/* Mobile / tablet menu toggle */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
+            className={`${iconBtn} lg:hidden`}
+          >
+            {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
         </div>
+      </div>
 
-        {/* Mobile / tablet search row */}
-        <div className="px-4 pb-3 sm:px-6 lg:hidden">
-          <NavSearch onSubmitted={closeMenu} />
-        </div>
+      {/* Mobile / tablet search row */}
+      <div className="px-4 pb-3 sm:px-6 lg:hidden">
+        <NavSearch onSubmitted={closeMenu} />
+      </div>
 
-        {/* Desktop category strip */}
-        <CategoryStrip />
-
-        {menuOpen && <MobilePanel onClose={closeMenu} />}
-      </header>
-    </>
+      {menuOpen && <MobilePanel onClose={closeMenu} />}
+    </header>
   );
 }

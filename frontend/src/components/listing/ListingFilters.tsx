@@ -1,17 +1,5 @@
 import { Category } from "../../types/category.types";
-
-// Simplified Ethiopian regions list for the location filter.
-const REGIONS = [
-  "Addis Ababa",
-  "Oromia",
-  "Amhara",
-  "Tigray",
-  "SNNPR",
-  "Sidama",
-  "Somali",
-  "Afar",
-  "Dire Dawa",
-];
+import { REGIONS } from "../../constants/regions";
 
 interface ListingFiltersProps {
   categories: Category[];
