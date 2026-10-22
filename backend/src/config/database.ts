@@ -8,6 +8,9 @@ export const pool = new Pool({
   database: env.db.name,
   user: env.db.user,
   password: env.db.password,
+  ssl: env.isProduction
+    ? { rejectUnauthorized: true }
+    : false,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
