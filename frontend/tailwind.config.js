@@ -20,8 +20,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ["Fraunces", "serif"],
-        sans: ["Inter", "sans-serif"],
+        display: ["Fraunces", "Noto Serif Ethiopic", "serif"],
+        sans: ["Inter", "Noto Sans Ethiopic", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
       },
     },

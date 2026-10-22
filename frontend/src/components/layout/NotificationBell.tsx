@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../context/NotificationContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { BellIcon } from "./Icons";
 
 function formatRelativeTime(iso: string): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -17,6 +19,7 @@ export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -41,28 +44,29 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="relative text-ink/80 hover:text-teal"
-        aria-label="Notifications"
+        className="relative flex h-9 w-9 items-center justify-center rounded-sm text-ink/80 hover:bg-teal-light hover:text-teal"
+        aria-label={t("notifications")}
+        title={t("notifications")}
       >
-        Notifications
+        <BellIcon />
         {unreadCount > 0 && (
-          <span className="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gold font-mono text-[10px] text-paper">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold font-mono text-[10px] text-paper">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full z-20 mt-2 w-80 rounded-sm border border-hairline bg-white shadow-lg">
+        <div className="fixed inset-x-3 top-28 z-40 rounded-sm sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 border border-hairline bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
-            <span className="font-display text-sm font-semibold text-ink">Notifications</span>
+            <span className="font-display text-sm font-semibold text-ink">{t("notifications")}</span>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={() => void markAllRead()}
                 className="font-sans text-xs text-teal hover:underline"
               >
-                Mark all read
+                {t("markAllRead")}
               </button>
             )}
           </div>
@@ -70,7 +74,7 @@ export function NotificationBell() {
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-4 py-6 text-center font-sans text-sm text-muted">
-                Nothing here yet.
+                {t("nothingYet")}
               </p>
             ) : (
               notifications.map((n) => (
