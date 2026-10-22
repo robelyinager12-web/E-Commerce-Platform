@@ -24,13 +24,14 @@ api.interceptors.request.use((config) => {
 
 let refreshPromise: Promise<string | null> | null = null;
 
+
 async function refreshAccessToken(): Promise<string | null> {
   try {
-    const response = await axios.post<{ data: { accessToken: string } }>(
-      "/api/v1/auth/refresh",
-      {},
-      { withCredentials: true }
+    const response = await api.post<{ data: { accessToken: string } }>(
+      "/auth/refresh",
+      {}
     );
+
     const newToken = response.data.data.accessToken;
     setAccessToken(newToken);
     return newToken;
@@ -39,6 +40,7 @@ async function refreshAccessToken(): Promise<string | null> {
     return null;
   }
 }
+
 
 api.interceptors.response.use(
   (response) => response,
