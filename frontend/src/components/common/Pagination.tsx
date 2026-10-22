@@ -1,4 +1,4 @@
-import { PaginationMeta } from "../../types/product.types";
+import { PaginationMeta } from "../../types/listing.types";
 
 export function Pagination({
   meta,
