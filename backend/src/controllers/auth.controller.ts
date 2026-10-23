@@ -12,11 +12,17 @@ function setRefreshCookie(res: Response, token: string): void {
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
     secure: env.isProduction,
-    sameSite: "strict",
+    sameSite: env.isProduction ? "none" : "strict",
     maxAge: REFRESH_COOKIE_MAX_AGE_MS,
     path: "/api/v1/auth",
   });
 }
+
+
+
+
+
+
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
