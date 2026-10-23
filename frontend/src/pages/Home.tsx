@@ -54,9 +54,9 @@ export function Home() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[250px_1fr]">
+      <div className="grid items-start gap-6 lg:grid-cols-[250px_1fr]">
         {/* Desktop category sidebar */}
-        <aside className="hidden lg:block">
+        <aside className="hidden lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <CategorySidebar categories={categories} />
         </aside>
 

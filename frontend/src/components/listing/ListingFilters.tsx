@@ -37,7 +37,7 @@ export function ListingFilters({
   const subCategories = activeTopId ? categories.filter((c) => c.parent_id === activeTopId) : [];
 
   return (
-    <aside className="flex flex-col gap-8">
+    <aside className="flex flex-col gap-8 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto md:pr-1">
       <div>
         <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Sort by</h3>
         <select

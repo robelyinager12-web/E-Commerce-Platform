@@ -15,7 +15,7 @@ export function CategorySidebar({ categories }: { categories: Category[] }) {
           <li key={category.id} className="border-b border-hairline last:border-0">
             <Link
               to={`/listings?category=${encodeURIComponent(category.slug)}`}
-              className="flex items-center justify-between px-4 py-3 font-sans text-sm text-ink transition-colors hover:bg-teal-light hover:text-teal-dark"
+              className="flex items-center justify-between px-4 py-2.5 font-sans text-sm text-ink transition-colors hover:bg-teal-light hover:text-teal-dark"
             >
               <span className="flex min-w-0 items-center gap-3">
                 <span aria-hidden="true" className="w-6 shrink-0 text-center text-lg leading-none">
