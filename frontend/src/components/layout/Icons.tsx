@@ -78,3 +78,8 @@ export const PlusIcon = (p: IconProps) => (
     <path d="M12 5v14M5 12h14" />
   </svg>
 );
+export const StarIcon = (p: IconProps) => (
+  <svg {...base} width={14} height={14} {...p}>
+    <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9L12 3.5Z" />
+  </svg>
+);

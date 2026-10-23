@@ -1,4 +1,5 @@
 /// <reference path="./types/express.d.ts" />
+import path from "path";
 import express, { Application } from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -24,6 +25,15 @@ app.use(cookieParser());
 app.use(
   morgan("combined", {
     stream: { write: (message: string) => logger.info(message.trim()) },
+  })
+);
+
+// --- Uploaded listing photos (served before the rate limiter so image-heavy pages are not throttled) ---
+app.use(
+  "/uploads",
+  express.static(path.join(process.cwd(), "uploads"), {
+    maxAge: "7d",
+    setHeaders: (res) => res.setHeader("Cross-Origin-Resource-Policy", "cross-origin"),
   })
 );
 

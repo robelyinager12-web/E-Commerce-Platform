@@ -270,6 +270,7 @@ export async function createListing(
     city: string;
     categoryId: string;
     imageUrl?: string;
+    imageUrls?: string[];
   }
 ): Promise<ListingDetail> {
   const category = await query("SELECT id FROM categories WHERE id = $1", [input.categoryId]);
@@ -298,11 +299,13 @@ export async function createListing(
     );
     const id = (result.rows as { id: string }[])[0].id;
 
-    if (input.imageUrl) {
+    // Photos in the order the seller arranged them; the first one is the title picture.
+    const imageUrls = input.imageUrls?.length ? input.imageUrls : input.imageUrl ? [input.imageUrl] : [];
+    for (let index = 0; index < imageUrls.length; index += 1) {
       await client.query(
         `INSERT INTO listing_images (listing_id, image_url, is_primary, display_order)
-         VALUES ($1::uuid, $2::varchar, true, 0)`,
-        [id, input.imageUrl]
+         VALUES ($1::uuid, $2::varchar, $3::boolean, $4::int)`,
+        [id, imageUrls[index], index === 0, index]
       );
     }
 
