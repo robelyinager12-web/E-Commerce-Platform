@@ -6,4 +6,5 @@ export interface Category {
   description: string | null;
   image_url: string | null;
   is_active: boolean;
+  sort_order?: number;
 }

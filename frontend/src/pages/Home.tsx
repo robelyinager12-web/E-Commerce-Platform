@@ -7,6 +7,7 @@ import { Category } from "../types/category.types";
 import { ListingCard } from "../components/listing/ListingCard";
 import { CategorySidebar } from "../components/listing/CategorySidebar";
 import { useLanguage } from "../context/LanguageContext";
+import { categoryIcon } from "../constants/categoryIcons";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
 export function Home() {
@@ -39,7 +40,7 @@ export function Home() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      {/* Category chips on phones / tablets */}
+           {/* Category chips on phones / tablets */}
       <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
         {categories.map((category) => (
           <Link
@@ -47,6 +48,7 @@ export function Home() {
             to={`/listings?category=${encodeURIComponent(category.slug)}`}
             className="shrink-0 rounded-full border border-hairline bg-white px-4 py-2 font-sans text-sm text-ink hover:border-teal hover:text-teal"
           >
+            <span aria-hidden="true" className="mr-1.5">{categoryIcon(category.slug)}</span>
             {category.name}
           </Link>
         ))}

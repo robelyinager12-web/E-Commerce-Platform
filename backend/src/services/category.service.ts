@@ -10,6 +10,7 @@ export interface CategoryRow {
   description: string | null;
   image_url: string | null;
   is_active: boolean;
+  sort_order: number;
   created_at: string;
 }
 
@@ -35,10 +36,10 @@ async function generateUniqueSlug(name: string, excludeId?: string): Promise<str
 
 export async function listCategories(): Promise<CategoryRow[]> {
   const result = await query<CategoryRow>(
-    `SELECT id, name, slug, parent_id, description, image_url, is_active, created_at
+    `SELECT id, name, slug, parent_id, description, image_url, is_active, sort_order, created_at
      FROM categories
      WHERE is_active = true
-     ORDER BY name ASC`
+     ORDER BY sort_order ASC, name ASC`
   );
   return result.rows;
 }
