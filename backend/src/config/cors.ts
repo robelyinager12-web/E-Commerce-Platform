@@ -1,6 +1,5 @@
 
 import { CorsOptions } from "cors";
-import { env } from "./env";
 
 const allowedOrigins = [
   "https://robels-ecommerce.vercel.app",
