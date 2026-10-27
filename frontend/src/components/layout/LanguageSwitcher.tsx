@@ -22,10 +22,10 @@ export function LanguageSwitcher() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`${t("language")}: ${current.label}`}
-        className="flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-ink/80 hover:bg-teal-light hover:text-teal"
+        className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-white transition-colors hover:bg-white/10"
       >
         <GlobeIcon />
-        <span className="font-mono text-xs uppercase">{current.short}</span>
+        <span className="font-sans text-sm font-medium uppercase">{current.short}</span>
         <ChevronDownIcon className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 

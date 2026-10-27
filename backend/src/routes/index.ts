@@ -10,6 +10,7 @@ import notificationRoutes from "./notification.routes";
 import adminReportsRoutes from "./adminReports.routes";
 import adminUserRoutes from "./adminUser.routes";
 import analyticsRoutes from "./analytics.routes";
+import uploadRoutes from "./upload.routes";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use("/notifications", notificationRoutes);
 router.use("/admin/reports", adminReportsRoutes);
 router.use("/admin/users", adminUserRoutes);
 router.use("/admin/analytics", analyticsRoutes);
+router.use("/uploads", uploadRoutes);
 
 export default router;

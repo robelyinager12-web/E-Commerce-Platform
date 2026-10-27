@@ -9,6 +9,13 @@ export const createListingValidator = [
   body("city").trim().notEmpty().withMessage("city is required"),
   body("categoryId").isUUID().withMessage("categoryId must be a valid UUID"),
   body("imageUrl").optional().isURL().withMessage("imageUrl must be a valid URL"),
+  body("imageUrls")
+    .optional()
+    .isArray({ max: 10 })
+    .withMessage("imageUrls must be an array of up to 10 items"),
+  body("imageUrls.*")
+    .custom((value) => typeof value === "string" && /^(\/uploads\/[\w.-]+|https?:\/\/\S+)$/i.test(value))
+    .withMessage("Each image must be an uploaded image or a valid URL"),
 ];
 
 export const updateListingValidator = [

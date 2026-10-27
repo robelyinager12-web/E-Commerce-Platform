@@ -6,6 +6,7 @@ import { ListingListItem } from "../types/listing.types";
 import { Category } from "../types/category.types";
 import { ListingCard } from "../components/listing/ListingCard";
 import { CategorySidebar } from "../components/listing/CategorySidebar";
+import { NavSearch } from "../components/layout/NavSearch";
 import { useLanguage } from "../context/LanguageContext";
 import { categoryIcon } from "../constants/categoryIcons";
 import { getErrorMessage } from "../utils/getErrorMessage";
@@ -42,55 +43,56 @@ export function Home() {
   const topLevelCategories = categories.filter((c) => !c.parent_id);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      {/* Category chips on phones / tablets */}
-      <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
-        {topLevelCategories.map((category) => (
-          <Link
-            key={category.id}
-            to={`/listings?category=${encodeURIComponent(category.slug)}`}
-            className="shrink-0 rounded-full border border-hairline bg-white px-4 py-2 font-sans text-sm text-ink hover:border-teal hover:text-teal"
-          >
-            <span aria-hidden="true" className="mr-1.5">{categoryIcon(category.slug)}</span>
-            {category.name}
-          </Link>
-        ))}
-      </div>
+    <>
+      {/* Green hero with the big search, like jiji.com.et */}
+      <section className="rounded-b-3xl bg-teal px-4 pb-12 pt-8 sm:pb-16 sm:pt-12">
+        <h1 className="text-center font-sans text-2xl font-bold text-white sm:text-3xl">
+          {t("heroTitle")}
+        </h1>
+        <div className="mx-auto mt-6 max-w-3xl">
+          <NavSearch size="lg" />
+        </div>
+      </section>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[250px_1fr]">
-        {/* Desktop category sidebar (sticky, with hover flyout) */}
-        <aside className="hidden lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-          <CategorySidebar categories={categories} />
-        </aside>
-
-        <div className="min-w-0">
-          {/* Promo banner */}
-          <div className="flex flex-col justify-between gap-4 rounded-sm bg-teal-light p-6 sm:flex-row sm:items-center">
-            <div>
-              <h1 className="font-display text-2xl font-semibold text-ink">{t("tagline")}</h1>
-              <p className="mt-1 max-w-md font-sans text-sm text-ink/70">{t("bannerText")}</p>
-            </div>
-            <Link to="/listings/new" className="btn-primary shrink-0">
-              {t("postAd")}
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        {/* Category chips on phones / tablets */}
+        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
+          {topLevelCategories.map((category) => (
+            <Link
+              key={category.id}
+              to={`/listings?category=${encodeURIComponent(category.slug)}`}
+              className="shrink-0 rounded-full border border-hairline bg-white px-4 py-2 font-sans text-sm text-ink hover:border-teal hover:text-teal"
+            >
+              <span aria-hidden="true" className="mr-1.5">{categoryIcon(category.slug)}</span>
+              {category.name}
             </Link>
+          ))}
+        </div>
+
+        <div className="grid items-start gap-6 lg:grid-cols-[250px_1fr]">
+          {/* Desktop category sidebar (sticky, with hover flyout) */}
+          <aside className="hidden lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+            <CategorySidebar categories={categories} />
+          </aside>
+
+          <div className="min-w-0">
+            <h2 className="mb-4 font-display text-xl font-semibold text-ink">
+              {t("recentlyListed")}
+            </h2>
+
+            {isLoading && <p className="font-sans text-sm text-muted">{t("loadingListings")}</p>}
+            {error && <p className="font-sans text-sm text-red-700">{error}</p>}
+
+            {!isLoading && !error && (
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                {listings.map((listing) => (
+                  <ListingCard key={listing.id} listing={listing} />
+                ))}
+              </div>
+            )}
           </div>
-
-          <h2 className="mb-4 mt-8 font-display text-xl font-semibold text-ink">
-            {t("recentlyListed")}
-          </h2>
-
-          {isLoading && <p className="font-sans text-sm text-muted">{t("loadingListings")}</p>}
-          {error && <p className="font-sans text-sm text-red-700">{error}</p>}
-
-          {!isLoading && !error && (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
-              {listings.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
-              ))}
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -16,6 +16,7 @@ export interface ListingListItem {
   status: "active" | "sold" | "expired" | "removed";
   created_at: string;
   primary_image: string | null;
+  views_count?: number;
 }
 
 export interface ListingDetail extends ListingListItem {

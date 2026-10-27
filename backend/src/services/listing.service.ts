@@ -258,7 +258,6 @@ export async function getSellerContact(listingId: string): Promise<SellerContact
 export async function incrementListingViews(id: string): Promise<void> {
   await query("UPDATE listings SET views_count = views_count + 1 WHERE id = $1", [id]);
 }
-
 export async function createListing(
   userId: string,
   input: {
@@ -270,6 +269,7 @@ export async function createListing(
     city: string;
     categoryId: string;
     imageUrl?: string;
+    imageUrls?: string[];
   }
 ): Promise<ListingDetail> {
   const category = await query("SELECT id FROM categories WHERE id = $1", [input.categoryId]);
@@ -298,11 +298,13 @@ export async function createListing(
     );
     const id = (result.rows as { id: string }[])[0].id;
 
-    if (input.imageUrl) {
+    // Photos in the order the seller arranged them; the first one is the title picture.
+    const imageUrls = input.imageUrls?.length ? input.imageUrls : input.imageUrl ? [input.imageUrl] : [];
+    for (let index = 0; index < imageUrls.length; index += 1) {
       await client.query(
         `INSERT INTO listing_images (listing_id, image_url, is_primary, display_order)
-         VALUES ($1::uuid, $2::varchar, true, 0)`,
-        [id, input.imageUrl]
+         VALUES ($1::uuid, $2::varchar, $3::boolean, $4::int)`,
+        [id, imageUrls[index], index === 0, index]
       );
     }
 
@@ -376,19 +378,24 @@ export async function deleteListing(userId: string, listingId: string): Promise<
   await assertOwnership(userId, listingId);
   await query("UPDATE listings SET status = 'removed' WHERE id = $1", [listingId]);
 }
+export interface MyListingItem extends ListingListItem {
+  views_count: number;
+}
 
-export async function listMyListings(userId: string): Promise<ListingListItem[]> {
+export async function listMyListings(userId: string): Promise<MyListingItem[]> {
   const result = await query(
     `SELECT
        l.id, l.title, l.slug, l.price::text, l.condition, l.region, l.city, l.status, l.created_at,
+       l.views_count,
        (SELECT image_url FROM listing_images WHERE listing_id = l.id AND is_primary = true LIMIT 1) as primary_image
      FROM listings l
      WHERE l.user_id = $1
      ORDER BY l.created_at DESC`,
     [userId]
   );
-  return result.rows as ListingListItem[];
+  return result.rows as MyListingItem[];
 }
+
 // --- Admin ---
 
 export interface ListListingsAdminFilters {
