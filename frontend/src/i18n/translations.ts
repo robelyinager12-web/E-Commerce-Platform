@@ -41,6 +41,11 @@ const en = {
   recentlyListed: "Recently listed",
   loadingListings: "Loading listings…",
   bannerText: "Post your ad in minutes and talk to buyers directly.",
+    myShop: "My shop",
+  feedback: "Feedback",
+  performance: "Performance",
+  settings: "Settings",
+  logOut: "Log out",
 } as const;
 
 export type TranslationKey = keyof typeof en;
@@ -81,6 +86,11 @@ const am: Dictionary = {
   recentlyListed: "በቅርቡ የተለጠፉ",
   loadingListings: "ማስታወቂያዎች በመጫን ላይ…",
   bannerText: "ማስታወቂያዎን በደቂቃዎች ውስጥ ይለጥፉ፤ ከገዢዎች ጋር በቀጥታ ይነጋገሩ።",
+    myShop: "የእኔ ሱቅ",
+  feedback: "አስተያየት",
+  performance: "አፈጻጸም",
+  settings: "ቅንብሮች",
+  logOut: "ውጣ",
 };
 
 const om: Dictionary = {
@@ -118,6 +128,11 @@ const om: Dictionary = {
   recentlyListed: "Dhiyeenyatti maxxanfaman",
   loadingListings: "Beeksisawwan fe'amaa jiru…",
   bannerText: "Beeksisa kee daqiiqaa muraasa keessatti maxxansi; kallattiin bitattoota waliin haasa'i.",
+    myShop: "Suuqa koo",
+  feedback: "Yaada",
+  performance: "Raawwii",
+  settings: "Qindaa'ina",
+  logOut: "Ba'i",
 };
 
 export const translations: Record<Language, Dictionary> = { en, am, om };

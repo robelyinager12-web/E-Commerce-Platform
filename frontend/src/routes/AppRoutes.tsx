@@ -11,6 +11,7 @@ import { MyListings } from "../pages/MyListings";
 import { SavedListings } from "../pages/SavedListings";
 import { SellerProfile } from "../pages/SellerProfile";
 import { Account } from "../pages/Account";
+import { Performance } from "../pages/Performance";
 import { NotFound } from "../pages/NotFound";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 import { AdminRoute } from "../components/common/AdminRoute";
@@ -39,6 +40,7 @@ export function AppRoutes() {
           <Route path="/saved" element={<SavedListings />} />
           <Route path="/account" element={<Account />} />
         </Route>
+                  <Route path="/performance" element={<Performance />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

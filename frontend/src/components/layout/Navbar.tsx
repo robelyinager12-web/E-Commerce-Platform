@@ -72,7 +72,10 @@ function UserMenu() {
   useDismiss(ref, open, close);
 
   if (!user) return null;
-  const itemClass = "block w-full px-4 py-2 text-left font-sans text-sm text-ink hover:bg-paper";
+
+  // Big, airy rows with thin separators, like the jiji.com.et account menu.
+  const row =
+    "block w-full border-b border-hairline px-8 py-4 text-left font-sans text-base text-ink transition-colors hover:bg-paper";
 
   return (
     <div ref={ref} className="relative">
@@ -90,25 +93,22 @@ function UserMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-40 mt-2 w-56 rounded-sm border border-hairline bg-white py-1 shadow-lg"
+          className="absolute right-0 top-full z-40 mt-3 w-64 overflow-hidden rounded-lg bg-white shadow-xl"
         >
-          <div className="border-b border-hairline px-4 py-3">
-            <p className="truncate font-sans text-sm font-medium text-ink">
-              {user.firstName} {user.lastName}
-            </p>
-            <p className="truncate font-sans text-xs text-muted">{user.email}</p>
-          </div>
-          <Link to="/account" role="menuitem" onClick={close} className={itemClass}>
-            {t("account")}
+          <Link to="/listings/mine" role="menuitem" onClick={close} className={row}>
+            {t("myShop")}
           </Link>
-          <Link to="/listings/mine" role="menuitem" onClick={close} className={itemClass}>
-            {t("myListings")}
+          <Link to={`/sellers/${user.id}`} role="menuitem" onClick={close} className={row}>
+            {t("feedback")}
           </Link>
-          <Link to="/saved" role="menuitem" onClick={close} className={itemClass}>
-            {t("saved")}
+          <Link to="/performance" role="menuitem" onClick={close} className={row}>
+            {t("performance")}
+          </Link>
+          <Link to="/account" role="menuitem" onClick={close} className={row}>
+            {t("settings")}
           </Link>
           {STAFF_ROLES.includes(user.role) && (
-            <Link to="/admin" role="menuitem" onClick={close} className={itemClass}>
+            <Link to="/admin" role="menuitem" onClick={close} className={row}>
               {t("admin")}
             </Link>
           )}
@@ -119,9 +119,9 @@ function UserMenu() {
               close();
               void logout();
             }}
-            className={`${itemClass} border-t border-hairline text-ink/60`}
+            className={`${row} border-b-0`}
           >
-            {t("signOut")}
+            {t("logOut")}
           </button>
         </div>
       )}
@@ -171,15 +171,20 @@ function MobilePanel({ onClose }: { onClose: () => void }) {
 
       {user && (
         <>
-          <p className={heading}>{t("account")}</p>
-          <Link to="/account" onClick={onClose} className={linkClass}>
-            {t("account")}
+                   <Link to="/listings/mine" onClick={onClose} className={linkClass}>
+            {t("myShop")}
           </Link>
-          <Link to="/listings/mine" onClick={onClose} className={linkClass}>
-            {t("myListings")}
+          <Link to={`/sellers/${user.id}`} onClick={onClose} className={linkClass}>
+            {t("feedback")}
+          </Link>
+          <Link to="/performance" onClick={onClose} className={linkClass}>
+            {t("performance")}
           </Link>
           <Link to="/saved" onClick={onClose} className={linkClass}>
             {t("saved")}
+          </Link>
+          <Link to="/account" onClick={onClose} className={linkClass}>
+            {t("settings")}
           </Link>
           {STAFF_ROLES.includes(user.role) && (
             <Link to="/admin" onClick={onClose} className={linkClass}>
@@ -221,7 +226,7 @@ function MobilePanel({ onClose }: { onClose: () => void }) {
             }}
             className="btn-secondary w-full"
           >
-            {t("signOut")}
+            {t("logOut")}
           </button>
         ) : (
           <div className="flex gap-3">
