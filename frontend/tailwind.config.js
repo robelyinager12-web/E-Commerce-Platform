@@ -35,9 +35,9 @@ export default {
           clear: "#FF8F94",
         },
       },
-      fontFamily: {
+           fontFamily: {
         display: ["Fraunces", "Noto Serif Ethiopic", "serif"],
-        sans: ["Inter", "Noto Sans Ethiopic", "sans-serif"],
+        sans: ["Roboto", "Noto Sans Ethiopic", "sans-serif"],
         mono: ["IBM Plex Mono", "monospace"],
       },
     },
