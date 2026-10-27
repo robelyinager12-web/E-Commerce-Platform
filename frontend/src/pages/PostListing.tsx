@@ -38,6 +38,9 @@ export function PostListing() {
   const [condition, setCondition] = useState<"new" | "used">("used");
   const [description, setDescription] = useState("");
 
+  // "This field is required." appears once a field was visited and left empty (like jiji.com.et).
+  const [touched, setTouched] = useState({ title: false, category: false, location: false });
+
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "uploading" | "posting">("idle");
 
@@ -69,6 +72,7 @@ export function PostListing() {
     setCondition("used");
     setDescription("");
     setError(null);
+    setTouched({ title: false, category: false, location: false });
     setStep(1);
   }
 
@@ -102,7 +106,7 @@ export function PostListing() {
   }
 
   const primaryButton =
-    "h-[52px] w-full rounded-xl font-sans text-base font-semibold transition-colors";
+    "h-10 w-full rounded-lg font-sans text-base font-bold transition-colors";
   const enabled = "bg-teal text-white hover:bg-teal-dark";
   const disabled = "cursor-not-allowed bg-form-btnoff text-form-btnofftext";
 
@@ -110,7 +114,7 @@ export function PostListing() {
     <div className="min-h-[70vh] bg-form-bg px-4 py-6 sm:px-6">
       <div className="mx-auto max-w-4xl">
         {/* Header card: Post ad + Clear */}
-        <div className="relative rounded-xl bg-white px-4 py-4 text-center">
+        <div className="relative rounded-lg bg-white px-4 py-4 text-center">
           {step === 2 && (
             <button
               type="button"
@@ -132,7 +136,7 @@ export function PostListing() {
         </div>
 
         {/* Form card */}
-        <div className="mt-5 rounded-xl bg-white px-4 py-8 sm:px-8">
+        <div className="mt-5 rounded-lg bg-white px-4 py-8 sm:px-8">
           <div className="mx-auto flex max-w-[400px] flex-col gap-4">
             {step === 1 ? (
               <>
@@ -144,6 +148,8 @@ export function PostListing() {
                     value={title}
                     maxLength={TITLE_MAX}
                     counter={`${title.length} / ${TITLE_MAX}`}
+                    error={touched.title && title.trim() === "" ? t("postRequired") : undefined}
+                    onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
@@ -152,6 +158,7 @@ export function PostListing() {
                   label={t("postCategory")}
                   required
                   value={categoryLabel}
+                  error={touched.category && !categoryId ? t("postRequired") : undefined}
                   onClick={() => setPicker("category")}
                 />
 
@@ -160,6 +167,7 @@ export function PostListing() {
                   required
                   value={region && city ? `${city}, ${region}` : ""}
                   disabled={!categoryId}
+                  error={touched.location && !region ? t("postRequired") : undefined}
                   onClick={() => setPicker("location")}
                 />
 
@@ -198,7 +206,7 @@ export function PostListing() {
                         type="button"
                         onClick={() => setCondition(value)}
                         aria-pressed={condition === value}
-                        className={`h-14 rounded-xl border font-sans text-base transition-colors ${
+                        className={`h-14 rounded-lg border font-sans text-base transition-colors ${
                           condition === value
                             ? "border-teal bg-teal-light text-teal-dark"
                             : "border-form-border text-form-label hover:border-teal"
@@ -244,7 +252,10 @@ export function PostListing() {
       {picker === "category" && (
         <CategoryPicker
           categories={categories}
-          onClose={() => setPicker(null)}
+          onClose={() => {
+            setTouched((prev) => ({ ...prev, category: true }));
+            setPicker(null);
+          }}
           onSelect={(id, label) => {
             setCategoryId(id);
             setCategoryLabel(label);
@@ -255,7 +266,10 @@ export function PostListing() {
 
       {picker === "location" && (
         <LocationPicker
-          onClose={() => setPicker(null)}
+          onClose={() => {
+            setTouched((prev) => ({ ...prev, location: true }));
+            setPicker(null);
+          }}
           onSelect={(selectedRegion, selectedCity) => {
             setRegion(selectedRegion);
             setCity(selectedCity);

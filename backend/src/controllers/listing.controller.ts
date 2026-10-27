@@ -40,7 +40,7 @@ export const getContact = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const postListing = asyncHandler(async (req: Request, res: Response) => {
-  const { title, description, price, condition, region, city, categoryId, imageUrl } = req.body;
+  const { title, description, price, condition, region, city, categoryId, imageUrl, imageUrls } = req.body;
   const listing = await createListing(req.user!.userId, {
     title,
     description,
@@ -50,6 +50,7 @@ export const postListing = asyncHandler(async (req: Request, res: Response) => {
     city,
     categoryId,
     imageUrl,
+    imageUrls,
   });
   sendSuccess(res, "Listing created successfully", listing, 201);
 });
