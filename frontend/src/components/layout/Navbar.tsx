@@ -11,25 +11,25 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NavSearch } from "./NavSearch";
 import { useDismiss } from "./useDismiss";
 import {
+  BookmarkIcon,
   CheckIcon,
-  ChevronDownIcon,
   CloseIcon,
   GlobeIcon,
-  HeartIcon,
+  ListIcon,
   MenuIcon,
-  PlusIcon,
+  UserIcon,
 } from "./Icons";
 
 const STAFF_ROLES = ["super_admin", "admin", "staff"];
 
+// White round icon button on the green bar (same look as jiji.com.et after login).
+const circleBtn =
+  "relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-teal transition-colors hover:bg-teal-light";
+
 function Brand() {
-  const { t } = useLanguage();
   return (
-    <Link to="/" className="shrink-0 leading-tight">
-      <div className="font-display text-2xl font-semibold tracking-tight text-ink">
-        Aurora Market
-      </div>
-      <p className="hidden font-sans text-[11px] text-muted md:block">{t("tagline")}</p>
+    <Link to="/" className="shrink-0 font-display text-xl font-semibold tracking-tight text-white sm:text-2xl">
+      Aurora Market
     </Link>
   );
 }
@@ -38,18 +38,27 @@ function SavedLink() {
   const { saved } = useSavedListings();
   const { t } = useLanguage();
   return (
-    <Link
-      to="/saved"
-      aria-label={t("saved")}
-      title={t("saved")}
-      className="relative flex h-9 w-9 items-center justify-center rounded-sm text-ink/80 hover:bg-teal-light hover:text-teal"
-    >
-      <HeartIcon />
+    <Link to="/saved" aria-label={t("saved")} title={t("saved")} className={`${circleBtn} hidden lg:flex`}>
+      <BookmarkIcon />
       {saved.length > 0 && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 font-mono text-[10px] text-paper">
+        <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 font-mono text-[10px] font-semibold text-white">
           {saved.length > 9 ? "9+" : saved.length}
         </span>
       )}
+    </Link>
+  );
+}
+
+function MyListingsLink() {
+  const { t } = useLanguage();
+  return (
+    <Link
+      to="/listings/mine"
+      aria-label={t("myListings")}
+      title={t("myListings")}
+      className={`${circleBtn} hidden lg:flex`}
+    >
+      <ListIcon />
     </Link>
   );
 }
@@ -63,7 +72,6 @@ function UserMenu() {
   useDismiss(ref, open, close);
 
   if (!user) return null;
-  const initial = (user.firstName?.[0] ?? "?").toUpperCase();
   const itemClass = "block w-full px-4 py-2 text-left font-sans text-sm text-ink hover:bg-paper";
 
   return (
@@ -74,15 +82,9 @@ function UserMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t("userMenu")}
-        className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-teal-light"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white/25 text-white ring-2 ring-white transition-colors hover:bg-white/35"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-teal font-sans text-sm font-medium text-paper">
-          {initial}
-        </span>
-        <span className="hidden max-w-[7rem] truncate font-sans text-sm text-ink/80 xl:block">
-          {user.firstName}
-        </span>
-        <ChevronDownIcon className={`text-ink/60 transition-transform ${open ? "rotate-180" : ""}`} />
+        <UserIcon width={22} height={22} />
       </button>
 
       {open && (
@@ -151,9 +153,9 @@ function MobilePanel({ onClose }: { onClose: () => void }) {
   const heading = "px-3 pb-1 pt-4 font-mono text-[11px] uppercase tracking-widest text-muted";
 
   return (
-    <div className="max-h-[calc(100vh-8rem)] overflow-y-auto border-t border-hairline bg-white px-4 pb-6 lg:hidden">
+    <div className="max-h-[calc(100vh-8rem)] overflow-y-auto border-t border-hairline bg-white px-4 pb-6 text-ink lg:hidden">
       <p className={heading}>{t("categories")}</p>
-      <Link to="/listings" onClick={onClose} className={`${linkClass} font-medium text-teal`}>
+      <Link to="/listings" onClick={onClose} className={`${linkClass} font-medium text-teal-dark`}>
         {t("allCategories")}
       </Link>
       {categories.map((c) => (
@@ -243,55 +245,60 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  // The homepage has its own big search in the green hero, so the header search is hidden there.
+  const isHome = location.pathname === "/";
+
   // Close the mobile panel whenever the route changes.
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname, location.search]);
 
-  const iconBtn =
-    "flex h-9 w-9 items-center justify-center rounded-sm text-ink/80 hover:bg-teal-light hover:text-teal";
-
   return (
-    <header className="sticky top-0 z-30 border-b border-hairline bg-paper">
+    <header className="sticky top-0 z-30 border-b border-white/15 bg-teal">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-5">
         <Brand />
 
-        {/* Desktop search (region + keywords) */}
-        <div className="hidden min-w-0 flex-1 lg:block">
-          <NavSearch />
-        </div>
+        {/* Desktop header search (every page except the homepage) */}
+        {!isHome && (
+          <div className="hidden min-w-0 flex-1 lg:block">
+            <NavSearch />
+          </div>
+        )}
 
         {/* Right-hand actions */}
-        <div className="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <div className="hidden lg:block">
             <LanguageSwitcher />
           </div>
 
-          {user && (
+          {user ? (
             <>
               <SavedLink />
               <NotificationBell />
+              <MyListingsLink />
+              <div className="hidden lg:block">
+                <UserMenu />
+              </div>
             </>
-          )}
-
-          {user ? (
-            <div className="hidden lg:block">
-              <UserMenu />
-            </div>
           ) : (
-            <Link
-              to="/login"
-              className="hidden px-3 py-2 font-sans text-sm font-medium text-ink/80 hover:text-teal lg:block"
-            >
-              {t("signIn")}
-            </Link>
+            <div className="hidden items-center gap-2 font-sans text-sm font-medium text-white lg:flex">
+              <Link to="/login" className="px-1 hover:underline">
+                {t("signIn")}
+              </Link>
+              <span aria-hidden="true" className="text-white/60">
+                |
+              </span>
+              <Link to="/register" className="px-1 hover:underline">
+                {t("register")}
+              </Link>
+            </div>
           )}
 
           <Link
             to="/listings/new"
-            className="inline-flex items-center gap-1.5 rounded-sm bg-gold px-4 py-2 font-sans text-sm font-semibold text-paper transition-colors hover:bg-gold-dark"
+            className="inline-flex h-10 items-center rounded-lg bg-gold px-5 font-sans text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-gold-dark sm:h-12 sm:px-12 sm:text-base"
           >
-            <PlusIcon /> {t("sell")}
+            {t("sell")}
           </Link>
 
           {/* Mobile / tablet menu toggle */}
@@ -300,17 +307,19 @@ export function Navbar() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
-            className={`${iconBtn} lg:hidden`}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 lg:hidden"
           >
             {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
       </div>
 
-      {/* Mobile / tablet search row */}
-      <div className="px-4 pb-3 sm:px-6 lg:hidden">
-        <NavSearch onSubmitted={closeMenu} />
-      </div>
+      {/* Mobile / tablet search row (not on the homepage) */}
+      {!isHome && (
+        <div className="px-4 pb-3 sm:px-6 lg:hidden">
+          <NavSearch onSubmitted={closeMenu} />
+        </div>
+      )}
 
       {menuOpen && <MobilePanel onClose={closeMenu} />}
     </header>

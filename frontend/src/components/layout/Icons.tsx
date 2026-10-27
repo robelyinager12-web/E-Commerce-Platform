@@ -78,3 +78,15 @@ export const PlusIcon = (p: IconProps) => (
     <path d="M12 5v14M5 12h14" />
   </svg>
 );
+export const BookmarkIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M6.5 3.5h11a1 1 0 0 1 1 1V21l-6.5-4.2L5.5 21V4.5a1 1 0 0 1 1-1Z" fill="currentColor" />
+  </svg>
+);
+
+export const ListIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <rect x="4" y="4" width="16" height="16" rx="2.5" />
+    <path d="M8 9h8M8 13h8M8 17h5" />
+  </svg>
+);

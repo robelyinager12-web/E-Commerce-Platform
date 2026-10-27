@@ -9,14 +9,14 @@ export default {
         muted: "#6B6560",
         hairline: "#E4E1D9",
         teal: {
-          DEFAULT: "#0F5257",
-          dark: "#0B3D41",
-          light: "#E4EEEE",
+          DEFAULT: "#00A63E",
+          dark: "#008A32",
+          light: "#E6F7EC",
         },
         gold: {
-          DEFAULT: "#C99A3B",
-          dark: "#A87F2C",
-          light: "#F7EDD8",
+          DEFAULT: "#FF9D3A",
+          dark: "#EE8A22",
+          light: "#FFF1DE",
         },
       },
       fontFamily: {
