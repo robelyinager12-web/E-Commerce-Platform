@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool, withTransaction } from "../../config/database";
 import { logger } from "../../config/logger";
+import { upsertCategories } from "./categories.seed";
 
 async function seed(): Promise<void> {
   logger.info("Starting database seed...");
@@ -31,39 +32,9 @@ async function seed(): Promise<void> {
     const sellerId = sellerResult.rows[0].id;
     logger.info("Sample seller user ensured: abebe.seller@example.com");
 
-    // --- Categories (Jiji-style top-level + one subcategory example) ---
-    const categories = [
-      { name: "Vehicles", slug: "vehicles", description: "Cars, motorcycles, and parts" },
-      { name: "Property", slug: "property", description: "Houses and land for sale or rent" },
-      { name: "Mobile Phones & Tablets", slug: "mobile-phones-tablets", description: "Phones, tablets, and accessories" },
-      { name: "Electronics", slug: "electronics", description: "TVs, computers, and appliances" },
-      { name: "Fashion", slug: "fashion", description: "Clothing, shoes, and accessories" },
-      { name: "Home & Furniture", slug: "home-furniture", description: "Furniture and home goods" },
-      { name: "Jobs", slug: "jobs", description: "Job vacancies and services" },
-    ];
-
-    const categoryIds: Record<string, string> = {};
-    for (const cat of categories) {
-      const result = await client.query(
-        `INSERT INTO categories (name, slug, description)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
-         RETURNING id, slug`,
-        [cat.name, cat.slug, cat.description]
-      );
-      categoryIds[result.rows[0].slug] = result.rows[0].id;
-    }
-    logger.info(`Seeded ${categories.length} categories`);
-
-    // Subcategory example: Cars under Vehicles
-    const carsResult = await client.query(
-      `INSERT INTO categories (name, slug, description, parent_id)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
-       RETURNING id, slug`,
-      ["Cars", "cars", "Passenger cars", categoryIds["vehicles"]]
-    );
-    categoryIds["cars"] = carsResult.rows[0].id;
+    // --- Categories (Jiji-style tree, see categories.seed.ts) ---
+    const categoryIds = await upsertCategories(client);
+    logger.info(`Seeded ${Object.keys(categoryIds).length} categories`);
 
     // --- Sample listings ---
     const listings = [
@@ -86,7 +57,7 @@ async function seed(): Promise<void> {
         condition: "used",
         region: "Addis Ababa",
         city: "Bole",
-        category: "mobile-phones-tablets",
+        category: "mobile-phones",
         image: "https://picsum.photos/seed/iphone13pro/600/600",
       },
       {
@@ -97,7 +68,7 @@ async function seed(): Promise<void> {
         condition: "used",
         region: "Addis Ababa",
         city: "Bole",
-        category: "property",
+        category: "houses-apartments-for-rent",
         image: "https://picsum.photos/seed/apartment-bole/600/600",
       },
       {
@@ -108,7 +79,7 @@ async function seed(): Promise<void> {
         condition: "new",
         region: "Oromia",
         city: "Adama",
-        category: "electronics",
+        category: "tv-dvd-equipment",
         image: "https://picsum.photos/seed/samsung-tv/600/600",
       },
     ];

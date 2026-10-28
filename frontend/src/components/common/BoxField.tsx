@@ -11,7 +11,6 @@ function RequiredMark({ faded = false }: { faded?: boolean }) {
   return <span className={faded ? "text-red-300" : "text-red-500"}>*</span>;
 }
 
-/** Red helper text under a field, e.g. "This field is required." */
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
@@ -24,14 +23,19 @@ function FieldError({ message }: { message?: string }) {
 interface BoxFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   required?: boolean;
-  /** Small text shown above the top-right corner, e.g. "0 / 70". */
   counter?: string;
-  /** When set, the box turns red and the message is shown underneath. */
   error?: string;
 }
 
-/** Text input with the label inside the box (floats up when filled). */
-export function BoxField({ label, required, counter, error, id, className = "", ...inputProps }: BoxFieldProps) {
+export function BoxField({
+  label,
+  required,
+  counter,
+  error,
+  id,
+  className = "",
+  ...inputProps
+}: BoxFieldProps) {
   return (
     <div>
       <div className="relative">
@@ -87,12 +91,10 @@ interface PickerFieldProps {
   value?: string;
   required?: boolean;
   disabled?: boolean;
-  /** When set, the box turns red and the message is shown underneath. */
   error?: string;
   onClick: () => void;
 }
 
-/** Looks like a field but opens a picker (category, location…). Greyed out while disabled. */
 export function PickerField({ label, value, required, disabled, error, onClick }: PickerFieldProps) {
   const borderClass = disabled
     ? "cursor-not-allowed border-form-off"
@@ -115,9 +117,7 @@ export function PickerField({ label, value, required, disabled, error, onClick }
               <span className="block truncate font-sans text-base text-ink">{value}</span>
             </>
           ) : (
-            <span
-              className={`font-sans text-base ${disabled ? "text-form-offtext" : "text-form-label"}`}
-            >
+            <span className={`font-sans text-base ${disabled ? "text-form-offtext" : "text-form-label"}`}>
               {label}
               {required && <RequiredMark faded={disabled} />}
             </span>

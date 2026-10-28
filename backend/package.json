@@ -12,7 +12,8 @@
     "migrate:up": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate.js up -m src/database/migrations",
     "migrate:down": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate.js down -m src/database/migrations",
     "migrate:create": "node node_modules/node-pg-migrate/bin/node-pg-migrate.js create -m src/database/migrations",
-    "seed": "node -r dotenv/config node_modules/ts-node/dist/bin.js src/database/seeds/seed.ts"
+    "seed": "node -r dotenv/config node_modules/ts-node/dist/bin.js src/database/seeds/seed.ts",
+    "seed:categories": "node -r dotenv/config node_modules/ts-node/dist/bin.js src/database/seeds/seedCategories.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

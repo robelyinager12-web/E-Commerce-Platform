@@ -39,12 +39,10 @@ export function Home() {
     };
   }, []);
 
-  // Subcategories stay in `categories` for the sidebar flyout; chips show top-level only.
-  const topLevelCategories = categories.filter((c) => !c.parent_id);
+  const topLevelCategories = categories.filter((category) => !category.parent_id);
 
   return (
     <>
-      {/* Green hero with the big search, like jiji.com.et */}
       <section className="rounded-b-3xl bg-teal px-4 pb-12 pt-8 sm:pb-16 sm:pt-12">
         <h1 className="text-center font-sans text-2xl font-bold text-white sm:text-3xl">
           {t("heroTitle")}
@@ -55,7 +53,6 @@ export function Home() {
       </section>
 
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-        {/* Category chips on phones / tablets */}
         <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
           {topLevelCategories.map((category) => (
             <Link
@@ -63,14 +60,15 @@ export function Home() {
               to={`/listings?category=${encodeURIComponent(category.slug)}`}
               className="shrink-0 rounded-full border border-hairline bg-white px-4 py-2 font-sans text-sm text-ink hover:border-teal hover:text-teal"
             >
-              <span aria-hidden="true" className="mr-1.5">{categoryIcon(category.slug)}</span>
+              <span aria-hidden="true" className="mr-1.5">
+                {categoryIcon(category.slug)}
+              </span>
               {category.name}
             </Link>
           ))}
         </div>
 
         <div className="grid items-start gap-6 lg:grid-cols-[250px_1fr]">
-          {/* Desktop category sidebar (sticky, with hover flyout) */}
           <aside className="hidden lg:sticky lg:top-20 lg:block lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
             <CategorySidebar categories={categories} />
           </aside>

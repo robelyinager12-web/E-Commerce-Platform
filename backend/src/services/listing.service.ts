@@ -103,9 +103,14 @@ export async function listListings(
   const params: unknown[] = [];
   let i = 1;
 
-  if (filters.category) {
+   if (filters.category) {
+    // A parent category (e.g. "vehicles") also matches listings posted in its subcategories ("cars").
     conditions.push(
-      `EXISTS (SELECT 1 FROM categories c WHERE c.id = l.category_id AND c.slug = $${i})`
+      `EXISTS (
+         SELECT 1 FROM categories c
+         LEFT JOIN categories p ON p.id = c.parent_id
+         WHERE c.id = l.category_id AND (c.slug = $${i} OR p.slug = $${i})
+       )`
     );
     params.push(filters.category);
     i += 1;

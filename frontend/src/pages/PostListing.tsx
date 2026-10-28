@@ -25,7 +25,6 @@ export function PostListing() {
   const [step, setStep] = useState<1 | 2>(1);
   const [picker, setPicker] = useState<Picker>(null);
 
-  // Step 1
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [categoryLabel, setCategoryLabel] = useState("");
@@ -33,14 +32,10 @@ export function PostListing() {
   const [city, setCity] = useState("");
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
 
-  // Step 2
   const [price, setPrice] = useState("");
   const [condition, setCondition] = useState<"new" | "used">("used");
   const [description, setDescription] = useState("");
-
-  // "This field is required." appears once a field was visited and left empty (like jiji.com.et).
   const [touched, setTouched] = useState({ title: false, category: false, location: false });
-
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "uploading" | "posting">("idle");
 
@@ -48,11 +43,10 @@ export function PostListing() {
     fetchCategories().then(setCategories).catch(() => setCategories([]));
   }, []);
 
-  // Release photo preview URLs when leaving the page.
   const photosRef = useRef<PhotoItem[]>([]);
   photosRef.current = photos;
   useEffect(() => {
-    return () => photosRef.current.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+    return () => photosRef.current.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
   }, []);
 
   const step1Valid = title.trim().length > 0 && categoryId !== "" && region !== "" && city !== "";
@@ -61,7 +55,7 @@ export function PostListing() {
   const isBusy = status !== "idle";
 
   function clearAll() {
-    photos.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+    photos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
     setTitle("");
     setCategoryId("");
     setCategoryLabel("");
@@ -84,7 +78,7 @@ export function PostListing() {
       let imageUrls: string[] | undefined;
       if (photos.length > 0) {
         setStatus("uploading");
-        imageUrls = await uploadImages(photos.map((p) => p.file));
+        imageUrls = await uploadImages(photos.map((photo) => photo.file));
       }
 
       setStatus("posting");
@@ -99,21 +93,19 @@ export function PostListing() {
         imageUrls,
       });
       navigate(`/listings/${listing.slug}`);
-    } catch (err) {
-      setError(getErrorMessage(err));
+    } catch (submitError) {
+      setError(getErrorMessage(submitError));
       setStatus("idle");
     }
   }
 
-  const primaryButton =
-    "h-10 w-full rounded-lg font-sans text-base font-bold transition-colors";
+  const primaryButton = "h-10 w-full rounded-lg font-sans text-base font-bold transition-colors";
   const enabled = "bg-teal text-white hover:bg-teal-dark";
   const disabled = "cursor-not-allowed bg-form-btnoff text-form-btnofftext";
 
   return (
     <div className="min-h-[70vh] bg-form-bg px-4 py-6 sm:px-6">
       <div className="mx-auto max-w-4xl">
-        {/* Header card: Post ad + Clear */}
         <div className="relative rounded-lg bg-white px-4 py-4 text-center">
           {step === 2 && (
             <button
@@ -135,7 +127,6 @@ export function PostListing() {
           </button>
         </div>
 
-        {/* Form card */}
         <div className="mt-5 rounded-lg bg-white px-4 py-8 sm:px-8">
           <div className="mx-auto flex max-w-[400px] flex-col gap-4">
             {step === 1 ? (
@@ -149,8 +140,8 @@ export function PostListing() {
                     maxLength={TITLE_MAX}
                     counter={`${title.length} / ${TITLE_MAX}`}
                     error={touched.title && title.trim() === "" ? t("postRequired") : undefined}
-                    onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onBlur={() => setTouched((previous) => ({ ...previous, title: true }))}
+                    onChange={(event) => setTitle(event.target.value)}
                   />
                 </div>
 
@@ -194,7 +185,7 @@ export function PostListing() {
                   inputMode="decimal"
                   min={0}
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={(event) => setPrice(event.target.value)}
                 />
 
                 <div>
@@ -225,7 +216,7 @@ export function PostListing() {
                     value={description}
                     maxLength={DESCRIPTION_MAX}
                     counter={`${description.length} / ${DESCRIPTION_MAX}`}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
 
@@ -253,7 +244,7 @@ export function PostListing() {
         <CategoryPicker
           categories={categories}
           onClose={() => {
-            setTouched((prev) => ({ ...prev, category: true }));
+            setTouched((previous) => ({ ...previous, category: true }));
             setPicker(null);
           }}
           onSelect={(id, label) => {
@@ -267,7 +258,7 @@ export function PostListing() {
       {picker === "location" && (
         <LocationPicker
           onClose={() => {
-            setTouched((prev) => ({ ...prev, location: true }));
+            setTouched((previous) => ({ ...previous, location: true }));
             setPicker(null);
           }}
           onSelect={(selectedRegion, selectedCity) => {

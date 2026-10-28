@@ -30,8 +30,14 @@ export function ListingFilters({
   maxPrice,
   onPriceChange,
 }: ListingFiltersProps) {
+  // Show top-level categories; expand the subcategories of the one that is currently selected.
+  const topLevel = categories.filter((c) => !c.parent_id);
+  const selected = categories.find((c) => c.slug === selectedCategory);
+  const activeTopId = selected ? selected.parent_id ?? selected.id : null;
+  const subCategories = activeTopId ? categories.filter((c) => c.parent_id === activeTopId) : [];
+
   return (
-    <aside className="flex flex-col gap-8">
+    <aside className="flex flex-col gap-8 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto md:pr-1">
       <div>
         <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Sort by</h3>
         <select
@@ -82,7 +88,7 @@ export function ListingFilters({
               All categories
             </button>
           </li>
-          {categories.map((category) => (
+          {topLevel.map((category) => (
             <li key={category.id}>
               <button
                 type="button"
@@ -93,6 +99,24 @@ export function ListingFilters({
               >
                 {category.name}
               </button>
+
+              {category.id === activeTopId && subCategories.length > 0 && (
+                <ul className="mb-1 ml-3 mt-1.5 flex flex-col gap-1.5 border-l border-hairline pl-3">
+                  {subCategories.map((sub) => (
+                    <li key={sub.id}>
+                      <button
+                        type="button"
+                        onClick={() => onCategoryChange(sub.slug)}
+                        className={`text-left hover:text-teal ${
+                          selectedCategory === sub.slug ? "font-medium text-teal" : "text-ink/70"
+                        }`}
+                      >
+                        {sub.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
