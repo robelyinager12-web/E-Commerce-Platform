@@ -71,6 +71,7 @@ export interface CreateListingInput {
   city: string;
   categoryId: string;
   imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export interface UpdateListingInput {
