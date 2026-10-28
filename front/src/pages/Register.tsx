@@ -40,7 +40,7 @@ export function Register() {
     <div className="mx-auto flex max-w-md flex-col px-6 py-20">
       <h1 className="mb-2 font-display text-3xl font-semibold text-ink">Create your account</h1>
       <p className="mb-8 font-sans text-sm text-muted">
-        Join Aurora Market for faster checkout and order tracking.
+        Join Heroy Market for faster checkout and order tracking.
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">

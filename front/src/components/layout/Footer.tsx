@@ -15,7 +15,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-12 font-sans text-sm text-muted">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="font-display text-xl font-semibold text-ink">Aurora Market</p>
+            <p className="font-display text-xl font-semibold text-ink">Heroy Market</p>
             <p className="mt-3 max-w-xs">{t("footerBlurb")}</p>
           </div>
 
@@ -66,7 +66,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col justify-between gap-4 border-t border-hairline pt-6 md:flex-row md:items-center">
           <p>
-            © {new Date().getFullYear()} Aurora Market. {t("allRightsReserved")}
+            © {new Date().getFullYear()} Heroy Market. {t("allRightsReserved")}
           </p>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">

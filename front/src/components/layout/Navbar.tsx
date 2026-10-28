@@ -29,7 +29,7 @@ const circleBtn =
 function Brand() {
   return (
     <Link to="/" className="shrink-0 font-display text-xl font-semibold tracking-tight text-white sm:text-2xl">
-      Aurora Market
+      Heroy Market
     </Link>
   );
 }
