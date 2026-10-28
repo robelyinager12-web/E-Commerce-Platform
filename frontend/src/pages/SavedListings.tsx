@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSavedListings } from "../context/SavedListingsContext";
+import { resolveImageUrl } from "../services/api";
 
 export function SavedListings() {
   const { saved, isLoading, toggleSave } = useSavedListings();
@@ -25,7 +26,11 @@ export function SavedListings() {
             <div key={item.id} className="card overflow-hidden">
               <Link to={`/listings/${item.slug}`} className="block aspect-square bg-teal-light">
                 {item.primary_image && (
-                  <img src={item.primary_image} alt={item.title} className="h-full w-full object-cover" />
+                  <img
+                    src={resolveImageUrl(item.primary_image) ?? undefined}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
                 )}
               </Link>
               <div className="p-4">

@@ -1,9 +1,18 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
+
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "/api/v1",
+  baseURL: API_BASE_URL,
   withCredentials: true, // send the httpOnly refresh-token cookie
 });
+
+export function resolveImageUrl(imageUrl: string | null): string | null {
+  if (!imageUrl || /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(imageUrl)) return imageUrl;
+  if (!/^https?:\/\//i.test(API_BASE_URL)) return imageUrl;
+
+  return new URL(imageUrl, new URL(API_BASE_URL).origin).toString();
+}
 
 let accessToken: string | null = null;
 

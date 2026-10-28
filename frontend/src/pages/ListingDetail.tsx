@@ -9,6 +9,7 @@ import { ReportListingModal } from "../components/listing/ReportListingModal";
 import { useAuth } from "../context/AuthContext";
 import { useSavedListings } from "../context/SavedListingsContext";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { resolveImageUrl } from "../services/api";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
@@ -145,7 +146,11 @@ export function ListingDetail() {
         <div>
           <div className="card aspect-square overflow-hidden bg-teal-light">
             {activeImage ? (
-              <img src={activeImage.image_url} alt={listing.title} className="h-full w-full object-cover" />
+              <img
+                src={resolveImageUrl(activeImage.image_url) ?? undefined}
+                alt={listing.title}
+                className="h-full w-full object-cover"
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-display text-muted">
                 No image
@@ -163,7 +168,11 @@ export function ListingDetail() {
                     index === activeImageIndex ? "border-teal" : "border-transparent"
                   }`}
                 >
-                  <img src={image.image_url} alt="" className="h-full w-full object-cover" />
+                  <img
+                    src={resolveImageUrl(image.image_url) ?? undefined}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>

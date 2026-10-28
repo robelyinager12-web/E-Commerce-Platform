@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ListingListItem } from "../../types/listing.types";
+import { resolveImageUrl } from "../../services/api";
 
 function formatRelativeDate(iso: string): string {
   const days = Math.floor((Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60 * 24));
@@ -15,7 +16,7 @@ export function ListingCard({ listing }: { listing: ListingListItem }) {
       <div className="aspect-square overflow-hidden bg-teal-light">
         {listing.primary_image ? (
           <img
-            src={listing.primary_image}
+            src={resolveImageUrl(listing.primary_image) ?? undefined}
             alt={listing.title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
