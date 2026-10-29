@@ -10,9 +10,10 @@ interface SellerReviewsResponse {
 
 export async function fetchSellerReviews(
   sellerId: string,
-  page = 1
+  page = 1,
+  limit?: number
 ): Promise<SellerReviewsResponse> {
-  const response = await api.get(`/sellers/${sellerId}/reviews`, { params: { page } });
+  const response = await api.get(`/sellers/${sellerId}/reviews`, { params: { page, limit } });
   return response.data.data as SellerReviewsResponse;
 }
 

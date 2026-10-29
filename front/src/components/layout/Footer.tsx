@@ -2,20 +2,21 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { LANGUAGES } from "../../i18n/translations";
+import { getMyAdvertsPath } from "../../utils/profileRoutes";
 
 export function Footer() {
   const { user } = useAuth();
   const { language, setLanguage, t } = useLanguage();
 
-  const heading = "font-mono text-[11px] uppercase tracking-widest text-ink";
-  const link = "block py-1 hover:text-teal";
+  const heading = "font-mono text-[11px] uppercase tracking-widest text-white/70";
+  const link = "block py-1 text-white/85 transition-colors hover:text-white hover:underline";
 
   return (
-    <footer className="mt-24 border-t border-hairline bg-paper">
-      <div className="mx-auto max-w-6xl px-6 py-12 font-sans text-sm text-muted">
+    <footer className="mt-24 border-t border-white/15 bg-teal">
+      <div className="mx-auto max-w-6xl px-6 py-12 font-sans text-sm text-white/75">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="font-display text-xl font-semibold text-ink">Heroy Market</p>
+            <p className="font-display text-xl font-semibold text-white">Heroy Market</p>
             <p className="mt-3 max-w-xs">{t("footerBlurb")}</p>
           </div>
 
@@ -37,7 +38,7 @@ export function Footer() {
               <Link to="/listings/new" className={link}>
                 {t("postAd")}
               </Link>
-              <Link to="/listings/mine" className={link}>
+              <Link to={getMyAdvertsPath(user?.id)} className={link}>
                 {t("myListings")}
               </Link>
             </div>
@@ -64,7 +65,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col justify-between gap-4 border-t border-hairline pt-6 md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col justify-between gap-4 border-t border-white/20 pt-6 md:flex-row md:items-center">
           <p>
             © {new Date().getFullYear()} Heroy Market. {t("allRightsReserved")}
           </p>
@@ -81,7 +82,9 @@ export function Footer() {
                   onClick={() => setLanguage(l.code)}
                   aria-pressed={l.code === language}
                   className={`rounded-sm px-2 py-1 text-xs ${
-                    l.code === language ? "bg-teal-light text-teal-dark" : "hover:text-teal"
+                    l.code === language
+                      ? "bg-white font-medium text-teal"
+                      : "text-white/75 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   {l.label}

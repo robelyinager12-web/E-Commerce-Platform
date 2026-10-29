@@ -7,8 +7,10 @@ import { SellerReview, SellerRatingSummary } from "../types/sellerReview.types";
 import { StarRating } from "../components/common/StarRating";
 import { ListingCard } from "../components/listing/ListingCard";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { useLanguage } from "../context/LanguageContext";
 
 export function SellerProfile() {
+  const { language, localize, t } = useLanguage();
   const { sellerId } = useParams<{ sellerId: string }>();
   const [reviews, setReviews] = useState<SellerReview[]>([]);
   const [summary, setSummary] = useState<SellerRatingSummary | null>(null);
@@ -34,7 +36,11 @@ export function SellerProfile() {
   }, [sellerId]);
 
   if (isLoading) {
-    return <div className="mx-auto max-w-5xl px-6 py-16 font-sans text-sm text-muted">Loading…</div>;
+    return (
+      <div className="mx-auto max-w-5xl px-6 py-16 font-sans text-sm text-muted">
+        {localize("Loading…")}
+      </div>
+    );
   }
 
   if (error) {
@@ -46,22 +52,27 @@ export function SellerProfile() {
       <div className="mb-10 flex items-center gap-4">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">
-            {reviews[0]?.reviewer_name ?? "Seller"}
+            {reviews[0]?.reviewer_name ?? localize("Seller")}
           </h1>
           {summary && (
             <div className="mt-1 flex items-center gap-2">
               <StarRating rating={parseFloat(summary.averageRating)} />
               <span className="font-sans text-sm text-muted">
-                {summary.reviewCount} review{summary.reviewCount === 1 ? "" : "s"}
+                {t("reviewCount").replace(
+                  "{count}",
+                  new Intl.NumberFormat(language === "am" ? "am-ET" : language === "om" ? "om-ET" : "en-ET").format(
+                    summary.reviewCount
+                  )
+                )}
               </span>
             </div>
           )}
         </div>
       </div>
 
-      <h2 className="mb-6 font-display text-xl font-semibold text-ink">Reviews</h2>
+      <h2 className="mb-6 font-display text-xl font-semibold text-ink">{localize("Reviews")}</h2>
       {reviews.length === 0 ? (
-        <p className="mb-10 font-sans text-sm text-muted">No reviews yet.</p>
+        <p className="mb-10 font-sans text-sm text-muted">{localize("No reviews yet.")}</p>
       ) : (
         <div className="mb-10">
           {reviews.map((review) => (
@@ -76,7 +87,7 @@ export function SellerProfile() {
         </div>
       )}
 
-      <h2 className="mb-6 font-display text-xl font-semibold text-ink">Listings</h2>
+      <h2 className="mb-6 font-display text-xl font-semibold text-ink">{localize("Listings")}</h2>
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {listings.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />

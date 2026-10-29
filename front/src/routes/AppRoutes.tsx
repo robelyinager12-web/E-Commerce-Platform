@@ -9,9 +9,14 @@ import { PostListing } from "../pages/PostListing";
 import { EditListing } from "../pages/EditListing";
 import { MyListings } from "../pages/MyListings";
 import { SavedListings } from "../pages/SavedListings";
+import { Messages } from "../pages/Messages";
+import { Notifications } from "../pages/Notifications";
 import { SellerProfile } from "../pages/SellerProfile";
 import { Account } from "../pages/Account";
 import { Performance } from "../pages/Performance";
+import { Feedback } from "../pages/Feedback";
+import { Shop } from "../pages/Shop";
+import { NicheIntelligence } from "../pages/NicheIntelligence";
 import { NotFound } from "../pages/NotFound";
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 import { AdminRoute } from "../components/common/AdminRoute";
@@ -27,6 +32,7 @@ export function AppRoutes() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/niche-intelligence" element={<NicheIntelligence />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/listings" element={<ListingBrowse />} />
@@ -37,10 +43,18 @@ export function AppRoutes() {
           <Route path="/listings/new" element={<PostListing />} />
           <Route path="/listings/:slug/edit" element={<EditListing />} />
           <Route path="/listings/mine" element={<MyListings />} />
+          <Route path="/profile/adverts" element={<MyListings />} />
           <Route path="/saved" element={<SavedListings />} />
+          <Route path="/profile/saved" element={<SavedListings />} />
+          <Route path="/profile-messages" element={<Messages />} />
+          <Route path="/profile/notifications" element={<Notifications />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/profile/settings/contact-details" element={<Account />} />
+          <Route path="/profile/statistics" element={<Performance />} />
+          <Route path="/performance" element={<Performance />} />
+          <Route path="/profile/feedback" element={<Feedback />} />
+          <Route path="/profile/shop" element={<Shop />} />
         </Route>
-                  <Route path="/performance" element={<Performance />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

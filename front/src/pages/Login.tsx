@@ -3,8 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FormField } from "../components/common/FormField";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { useLanguage } from "../context/LanguageContext";
 
 export function Login() {
+  const { localize } = useLanguage();
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,13 +33,15 @@ export function Login() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-6 py-20">
-      <h1 className="mb-2 font-display text-3xl font-semibold text-ink">Welcome back</h1>
-      <p className="mb-8 font-sans text-sm text-muted">Sign in to continue to your account.</p>
+      <h1 className="mb-2 font-display text-3xl font-semibold text-ink">{localize("Welcome back")}</h1>
+      <p className="mb-8 font-sans text-sm text-muted">
+        {localize("Sign in to continue to your account.")}
+      </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <FormField
           id="email"
-          label="Email"
+          label={localize("Email")}
           type="email"
           autoComplete="email"
           required
@@ -46,7 +50,7 @@ export function Login() {
         />
         <FormField
           id="password"
-          label="Password"
+          label={localize("Password")}
           type="password"
           autoComplete="current-password"
           required
@@ -61,14 +65,14 @@ export function Login() {
         )}
 
         <button type="submit" className="btn-primary mt-2" disabled={isSubmitting}>
-          {isSubmitting ? "Signing in…" : "Sign in"}
+          {isSubmitting ? localize("Signing in…") : localize("Sign in")}
         </button>
       </form>
 
       <p className="mt-8 text-center font-sans text-sm text-muted">
-        New here?{" "}
+        {localize("New here?")}{" "}
         <Link to="/register" className="text-teal hover:underline">
-          Create an account
+          {localize("Create an account")}
         </Link>
       </p>
     </div>

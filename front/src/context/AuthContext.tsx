@@ -13,6 +13,7 @@ import {
   logoutRequest,
   fetchCurrentUser,
   refreshSession,
+  updateCurrentUser,
 } from "../services/auth.service";
 
 interface AuthContextValue {
@@ -25,6 +26,7 @@ interface AuthContextValue {
     email: string;
     password: string;
   }) => Promise<void>;
+  updateProfile: (input: { firstName: string; lastName: string; phone: string | null }) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -76,8 +78,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateProfile = useCallback(
+    async (input: { firstName: string; lastName: string; phone: string | null }) => {
+      const updatedUser = await updateCurrentUser(input);
+      setUser(updatedUser);
+    },
+    []
+  );
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,12 +10,14 @@ import { NotificationBell } from "./NotificationBell";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { NavSearch } from "./NavSearch";
 import { useDismiss } from "./useDismiss";
+import { getMyAdvertsPath } from "../../utils/profileRoutes";
 import {
   BookmarkIcon,
   CheckIcon,
   CloseIcon,
   GlobeIcon,
   ListIcon,
+  MessageIcon,
   MenuIcon,
   UserIcon,
 } from "./Icons";
@@ -38,7 +40,7 @@ function SavedLink() {
   const { saved } = useSavedListings();
   const { t } = useLanguage();
   return (
-    <Link to="/saved" aria-label={t("saved")} title={t("saved")} className={`${circleBtn} hidden lg:flex`}>
+    <Link to="/profile/saved" aria-label={t("saved")} title={t("saved")} className={`${circleBtn} hidden lg:flex`}>
       <BookmarkIcon />
       {saved.length > 0 && (
         <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 font-mono text-[10px] font-semibold text-white">
@@ -49,11 +51,26 @@ function SavedLink() {
   );
 }
 
-function MyListingsLink() {
+function MessagesLink() {
   const { t } = useLanguage();
   return (
     <Link
-      to="/listings/mine"
+      to="/profile-messages"
+      aria-label={t("messages")}
+      title={t("messages")}
+      className={`${circleBtn} hidden lg:flex`}
+    >
+      <MessageIcon />
+    </Link>
+  );
+}
+
+function MyListingsLink() {
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  return (
+    <Link
+      to={getMyAdvertsPath(user?.id)}
       aria-label={t("myListings")}
       title={t("myListings")}
       className={`${circleBtn} hidden lg:flex`}
@@ -95,16 +112,16 @@ function UserMenu() {
           role="menu"
           className="absolute right-0 top-full z-40 mt-3 w-64 overflow-hidden rounded-lg bg-white shadow-xl"
         >
-          <Link to="/listings/mine" role="menuitem" onClick={close} className={row}>
+          <Link to="/profile/shop" role="menuitem" onClick={close} className={row}>
             {t("myShop")}
           </Link>
-          <Link to={`/sellers/${user.id}`} role="menuitem" onClick={close} className={row}>
+          <Link to="/profile/feedback" role="menuitem" onClick={close} className={row}>
             {t("feedback")}
           </Link>
-          <Link to="/performance" role="menuitem" onClick={close} className={row}>
+          <Link to="/profile/statistics" role="menuitem" onClick={close} className={row}>
             {t("performance")}
           </Link>
-          <Link to="/account" role="menuitem" onClick={close} className={row}>
+          <Link to="/profile/settings/contact-details" role="menuitem" onClick={close} className={row}>
             {t("settings")}
           </Link>
           {STAFF_ROLES.includes(user.role) && (
@@ -171,19 +188,25 @@ function MobilePanel({ onClose }: { onClose: () => void }) {
 
       {user && (
         <>
-                   <Link to="/listings/mine" onClick={onClose} className={linkClass}>
-            {t("myShop")}
+                   <Link to="/profile-messages" onClick={onClose} className={linkClass}>
+                     {t("messages")}
           </Link>
-          <Link to={`/sellers/${user.id}`} onClick={onClose} className={linkClass}>
+                   <Link to="/profile/shop" onClick={onClose} className={linkClass}>
+                     {t("myShop")}
+                   </Link>
+          <Link to="/profile/feedback" onClick={onClose} className={linkClass}>
             {t("feedback")}
           </Link>
-          <Link to="/performance" onClick={onClose} className={linkClass}>
+          <Link to="/profile/statistics" onClick={onClose} className={linkClass}>
             {t("performance")}
           </Link>
-          <Link to="/saved" onClick={onClose} className={linkClass}>
+          <Link to={getMyAdvertsPath(user.id)} onClick={onClose} className={linkClass}>
+            {t("myListings")}
+          </Link>
+          <Link to="/profile/saved" onClick={onClose} className={linkClass}>
             {t("saved")}
           </Link>
-          <Link to="/account" onClick={onClose} className={linkClass}>
+          <Link to="/profile/settings/contact-details" onClick={onClose} className={linkClass}>
             {t("settings")}
           </Link>
           {STAFF_ROLES.includes(user.role) && (
@@ -279,6 +302,7 @@ export function Navbar() {
           {user ? (
             <>
               <SavedLink />
+              <MessagesLink />
               <NotificationBell />
               <MyListingsLink />
               <div className="hidden lg:block">

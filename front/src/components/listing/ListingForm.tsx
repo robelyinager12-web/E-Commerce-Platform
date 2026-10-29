@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Category } from "../../types/category.types";
 import { ListingDetail } from "../../types/listing.types";
 import { FormField } from "../common/FormField";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface ListingFormValues {
   title: string;
@@ -47,6 +48,7 @@ export function ListingForm({
   }) => void;
   isSubmitting: boolean;
 }) {
+  const { localize } = useLanguage();
   const [values, setValues] = useState<ListingFormValues>(toFormValues(existing));
 
   function updateField(field: keyof ListingFormValues) {
@@ -74,11 +76,11 @@ export function ListingForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <FormField id="title" label="Title" required value={values.title} onChange={updateField("title")} />
+      <FormField id="title" label={localize("Title")} required value={values.title} onChange={updateField("title")} />
 
       <div>
         <label htmlFor="description" className="mb-1.5 block font-sans text-sm font-medium text-ink">
-          Description
+          {localize("Description")}
         </label>
         <textarea
           id="description"
@@ -92,7 +94,7 @@ export function ListingForm({
       <div className="grid grid-cols-2 gap-4">
         <FormField
           id="price"
-          label="Price (Br)"
+          label={localize("Price (Br)")}
           type="number"
           min="0"
           required
@@ -101,7 +103,7 @@ export function ListingForm({
         />
         <div>
           <label htmlFor="condition" className="mb-1.5 block font-sans text-sm font-medium text-ink">
-            Condition
+            {localize("Condition")}
           </label>
           <select
             id="condition"
@@ -109,15 +111,15 @@ export function ListingForm({
             onChange={updateField("condition")}
             className="input-field"
           >
-            <option value="used">Used</option>
-            <option value="new">New</option>
+            <option value="used">{localize("Used")}</option>
+            <option value="new">{localize("New")}</option>
           </select>
         </div>
       </div>
 
       <div>
         <label htmlFor="categoryId" className="mb-1.5 block font-sans text-sm font-medium text-ink">
-          Category
+          {localize("Category")}
         </label>
         <select
           id="categoryId"
@@ -127,7 +129,7 @@ export function ListingForm({
           required
         >
           <option value="" disabled>
-            Select a category
+            {localize("Select a category")}
           </option>
           {postableCategories.map((c) => (
             <option key={c.id} value={c.id}>
@@ -138,19 +140,23 @@ export function ListingForm({
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <FormField id="region" label="Region" required value={values.region} onChange={updateField("region")} />
-        <FormField id="city" label="City" required value={values.city} onChange={updateField("city")} />
+        <FormField id="region" label={localize("Region")} required value={values.region} onChange={updateField("region")} />
+        <FormField id="city" label={localize("City")} required value={values.city} onChange={updateField("city")} />
       </div>
 
       <FormField
         id="imageUrl"
-        label="Image URL (optional)"
+        label={localize("Image URL (optional)")}
         value={values.imageUrl}
         onChange={updateField("imageUrl")}
       />
 
       <button type="submit" className="btn-primary self-start" disabled={isSubmitting}>
-        {isSubmitting ? "Saving…" : existing ? "Save changes" : "Post listing"}
+        {isSubmitting
+          ? localize("Saving…")
+          : existing
+            ? localize("Save changes")
+            : localize("Post listing")}
       </button>
     </form>
   );

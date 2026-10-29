@@ -3,8 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FormField } from "../components/common/FormField";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { useLanguage } from "../context/LanguageContext";
 
 export function Register() {
+  const { localize } = useLanguage();
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -38,23 +40,25 @@ export function Register() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-6 py-20">
-      <h1 className="mb-2 font-display text-3xl font-semibold text-ink">Create your account</h1>
+      <h1 className="mb-2 font-display text-3xl font-semibold text-ink">
+        {localize("Create your account")}
+      </h1>
       <p className="mb-8 font-sans text-sm text-muted">
-        Join Heroy Market for faster checkout and order tracking.
+        {localize("Join Heroy Market for faster checkout and order tracking.")}
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             id="firstName"
-            label="First name"
+            label={localize("First name")}
             required
             value={form.firstName}
             onChange={updateField("firstName")}
           />
           <FormField
             id="lastName"
-            label="Last name"
+            label={localize("Last name")}
             required
             value={form.lastName}
             onChange={updateField("lastName")}
@@ -62,7 +66,7 @@ export function Register() {
         </div>
         <FormField
           id="email"
-          label="Email"
+          label={localize("Email")}
           type="email"
           autoComplete="email"
           required
@@ -71,7 +75,7 @@ export function Register() {
         />
         <FormField
           id="password"
-          label="Password"
+          label={localize("Password")}
           type="password"
           autoComplete="new-password"
           required
@@ -80,7 +84,7 @@ export function Register() {
           onChange={updateField("password")}
         />
         <p className="-mt-3 font-sans text-xs text-muted">
-          At least 8 characters, with a letter and a number.
+          {localize("At least 8 characters, with a letter and a number.")}
         </p>
 
         {error && (
@@ -90,14 +94,14 @@ export function Register() {
         )}
 
         <button type="submit" className="btn-primary mt-2" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account…" : "Create account"}
+          {isSubmitting ? localize("Creating account…") : localize("Create account")}
         </button>
       </form>
 
       <p className="mt-8 text-center font-sans text-sm text-muted">
-        Already have an account?{" "}
+        {localize("Already have an account?")}{" "}
         <Link to="/login" className="text-teal hover:underline">
-          Sign in
+          {localize("Sign in")}
         </Link>
       </p>
     </div>

@@ -74,8 +74,29 @@ export function Home() {
           </aside>
 
           <div className="min-w-0">
+            <div className="mb-6 grid max-w-xl grid-cols-[1.3fr_1fr] gap-3">
+              <Link
+                to="/niche-intelligence"
+                className="flex min-h-[74px] items-center justify-center gap-2 rounded-xl border border-[#b8b2f3] bg-[#dcdaf0] px-3 py-3 font-sans text-sm font-medium text-ink transition-colors hover:bg-[#d2cfeb] sm:text-lg"
+              >
+                <span aria-hidden="true" className="text-3xl leading-none sm:text-4xl">
+                  🔎
+                </span>
+                <span>{t("nicheIntelligence")}</span>
+              </Link>
+              <Link
+                to="/listings/new"
+                className="flex min-h-[74px] items-center justify-center gap-2 rounded-xl border border-[#69d68c] bg-[#e5f5e9] px-3 py-3 font-sans text-sm font-medium text-ink transition-colors hover:bg-[#d9f0df] sm:text-lg"
+              >
+                <span aria-hidden="true" className="text-3xl leading-none sm:text-4xl">
+                  💸
+                </span>
+                <span>{t("howToSell")}</span>
+              </Link>
+            </div>
+
             <h2 className="mb-4 font-display text-xl font-semibold text-ink">
-              {t("recentlyListed")}
+              {t("recommendedForYou")}
             </h2>
 
             {isLoading && <p className="font-sans text-sm text-muted">{t("loadingListings")}</p>}

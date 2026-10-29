@@ -1,5 +1,6 @@
 import { Category } from "../../types/category.types";
 import { REGIONS } from "../../constants/regions";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface ListingFiltersProps {
   categories: Category[];
@@ -30,6 +31,7 @@ export function ListingFilters({
   maxPrice,
   onPriceChange,
 }: ListingFiltersProps) {
+  const { localize } = useLanguage();
   // Show top-level categories; expand the subcategories of the one that is currently selected.
   const topLevel = categories.filter((c) => !c.parent_id);
   const selected = categories.find((c) => c.slug === selectedCategory);
@@ -39,22 +41,22 @@ export function ListingFilters({
   return (
     <aside className="flex flex-col gap-8 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto md:pr-1">
       <div>
-        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Sort by</h3>
+        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">{localize("Sort by")}</h3>
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value)}
           className="input-field"
         >
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: low to high</option>
-          <option value="price_desc">Price: high to low</option>
+          <option value="newest">{localize("Newest")}</option>
+          <option value="price_asc">{localize("Price: low to high")}</option>
+          <option value="price_desc">{localize("Price: high to low")}</option>
         </select>
       </div>
 
       <div>
-        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Region</h3>
+        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">{localize("Region")}</h3>
         <select value={region} onChange={(e) => onRegionChange(e.target.value)} className="input-field">
-          <option value="">All regions</option>
+          <option value="">{localize("All regions")}</option>
           {REGIONS.map((r) => (
             <option key={r} value={r}>
               {r}
@@ -64,20 +66,20 @@ export function ListingFilters({
       </div>
 
       <div>
-        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Condition</h3>
+        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">{localize("Condition")}</h3>
         <select
           value={condition}
           onChange={(e) => onConditionChange(e.target.value)}
           className="input-field"
         >
-          <option value="">Any condition</option>
-          <option value="new">New</option>
-          <option value="used">Used</option>
+          <option value="">{localize("Any condition")}</option>
+          <option value="new">{localize("New")}</option>
+          <option value="used">{localize("Used")}</option>
         </select>
       </div>
 
       <div>
-        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">Category</h3>
+        <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">{localize("Category")}</h3>
         <ul className="flex flex-col gap-1.5 font-sans text-sm">
           <li>
             <button
@@ -85,7 +87,7 @@ export function ListingFilters({
               onClick={() => onCategoryChange(null)}
               className={`hover:text-teal ${!selectedCategory ? "font-medium text-teal" : "text-ink/80"}`}
             >
-              All categories
+              {localize("All categories")}
             </button>
           </li>
           {topLevel.map((category) => (
@@ -124,13 +126,13 @@ export function ListingFilters({
 
       <div>
         <h3 className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
-          Price range (Br)
+          {localize("Price range (Br)")}
         </h3>
         <div className="flex items-center gap-2">
           <input
             type="number"
             min={0}
-            placeholder="Min"
+            placeholder={localize("Min")}
             value={minPrice}
             onChange={(e) => onPriceChange(e.target.value, maxPrice)}
             className="input-field !py-2"
@@ -139,7 +141,7 @@ export function ListingFilters({
           <input
             type="number"
             min={0}
-            placeholder="Max"
+            placeholder={localize("Max")}
             value={maxPrice}
             onChange={(e) => onPriceChange(minPrice, e.target.value)}
             className="input-field !py-2"

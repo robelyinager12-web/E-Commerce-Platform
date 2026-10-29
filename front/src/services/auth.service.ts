@@ -30,6 +30,15 @@ export async function fetchCurrentUser(): Promise<User> {
   return response.data.data as User;
 }
 
+export async function updateCurrentUser(input: {
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+}): Promise<User> {
+  const response = await api.patch("/users/me", input);
+  return response.data.data as User;
+}
+
 export async function refreshSession(): Promise<string> {
   const response = await api.post("/auth/refresh");
   const data = response.data.data as { accessToken: string };

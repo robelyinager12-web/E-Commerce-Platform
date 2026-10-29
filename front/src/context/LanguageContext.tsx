@@ -7,7 +7,13 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { Language, LANGUAGES, TranslationKey, translations } from "../i18n/translations";
+import {
+  Language,
+  LANGUAGES,
+  TranslationKey,
+  translateInterfaceText,
+  translations,
+} from "../i18n/translations";
 
 const STORAGE_KEY = "aurora.language";
 
@@ -15,6 +21,7 @@ interface LanguageContextValue {
   language: Language;
   setLanguage: (language: Language) => void;
   t: (key: TranslationKey) => string;
+  localize: (text: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
@@ -47,7 +54,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback((key: TranslationKey) => translations[language][key], [language]);
 
-  const value = useMemo(() => ({ language, setLanguage, t }), [language, setLanguage, t]);
+  const localize = useCallback((text: string) => translateInterfaceText(language, text), [language]);
+  const value = useMemo(
+    () => ({ language, setLanguage, t, localize }),
+    [language, setLanguage, t, localize]
+  );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

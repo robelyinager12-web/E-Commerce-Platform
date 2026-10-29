@@ -6,8 +6,10 @@ import { Category } from "../types/category.types";
 import { ListingDetail } from "../types/listing.types";
 import { ListingForm } from "../components/listing/ListingForm";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { useLanguage } from "../context/LanguageContext";
 
 export function EditListing() {
+  const { localize } = useLanguage();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [listing, setListing] = useState<ListingDetail | null>(null);
@@ -42,7 +44,11 @@ export function EditListing() {
   }
 
   if (isLoading) {
-    return <div className="mx-auto max-w-2xl px-6 py-16 font-sans text-sm text-muted">Loading…</div>;
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-16 font-sans text-sm text-muted">
+        {localize("Loading…")}
+      </div>
+    );
   }
 
   if (error && !listing) {
@@ -53,7 +59,9 @@ export function EditListing() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="mb-8 font-display text-3xl font-semibold text-ink">Edit listing</h1>
+      <h1 className="mb-8 font-display text-3xl font-semibold text-ink">
+        {localize("Edit listing")}
+      </h1>
       {error && <p className="mb-4 font-sans text-sm text-red-700">{error}</p>}
       <ListingForm existing={listing} categories={categories} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
     </div>

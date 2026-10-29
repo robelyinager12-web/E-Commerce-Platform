@@ -8,8 +8,10 @@ import { ListingCard } from "../components/listing/ListingCard";
 import { ListingFilters } from "../components/listing/ListingFilters";
 import { Pagination } from "../components/common/Pagination";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { useLanguage } from "../context/LanguageContext";
 
 export function ListingBrowse() {
+  const { language, localize, t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const category = searchParams.get("category");
@@ -87,11 +89,18 @@ export function ListingBrowse() {
     <div className="mx-auto max-w-6xl px-6 py-12">
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="font-display text-3xl font-semibold text-ink">
-          {category ? categories.find((c) => c.slug === category)?.name ?? "Listings" : "All listings"}
+          {category
+            ? categories.find((c) => c.slug === category)?.name ?? localize("Listings")
+            : localize("All listings")}
         </h1>
         {meta && (
           <p className="font-sans text-sm text-muted">
-            {meta.totalItems} listing{meta.totalItems === 1 ? "" : "s"}
+            {t("listingsCount").replace(
+              "{count}",
+              new Intl.NumberFormat(language === "am" ? "am-ET" : language === "om" ? "om-ET" : "en-ET").format(
+                meta.totalItems
+              )
+            )}
           </p>
         )}
       </div>
@@ -99,7 +108,7 @@ export function ListingBrowse() {
       <div className="mb-8">
         <input
           type="search"
-          placeholder="Search listings…"
+          placeholder={localize("Search listings…")}
           defaultValue={search}
           onChange={(e) => {
             const value = e.target.value;
@@ -127,12 +136,12 @@ export function ListingBrowse() {
         />
 
         <div>
-          {isLoading && <p className="font-sans text-sm text-muted">Loading…</p>}
+          {isLoading && <p className="font-sans text-sm text-muted">{localize("Loading…")}</p>}
           {error && <p className="font-sans text-sm text-red-700">{error}</p>}
 
           {!isLoading && !error && listings.length === 0 && (
             <p className="font-sans text-sm text-muted">
-              No listings match your filters. Try widening your search.
+              {localize("No listings match your filters. Try widening your search.")}
             </p>
           )}
 

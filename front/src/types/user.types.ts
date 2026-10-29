@@ -3,6 +3,8 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string | null;
+  createdAt?: string;
   role: "super_admin" | "admin" | "staff" | "customer";
 }
 

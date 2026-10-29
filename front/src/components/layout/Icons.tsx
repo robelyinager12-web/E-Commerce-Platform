@@ -42,6 +42,13 @@ export const BellIcon = (p: IconProps) => (
   </svg>
 );
 
+export const MessageIcon = (p: IconProps) => (
+  <svg {...base} {...p}>
+    <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-1 2 0-5.5A7.5 7.5 0 1 1 20 11.5Z" />
+    <path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" />
+  </svg>
+);
+
 export const UserIcon = (p: IconProps) => (
   <svg {...base} {...p}>
     <circle cx="12" cy="8" r="4" />

@@ -1,4 +1,5 @@
 import { PaginationMeta } from "../../types/listing.types";
+import { useLanguage } from "../../context/LanguageContext";
 
 export function Pagination({
   meta,
@@ -7,6 +8,7 @@ export function Pagination({
   meta: PaginationMeta;
   onPageChange: (page: number) => void;
 }) {
+  const { localize } = useLanguage();
   if (meta.totalPages <= 1) return null;
 
   return (
@@ -17,7 +19,7 @@ export function Pagination({
         disabled={meta.page <= 1}
         className="btn-secondary !px-3 !py-1.5 disabled:opacity-30"
       >
-        Previous
+        {localize("Previous")}
       </button>
       <span className="price-tag px-3 text-muted">
         {meta.page} / {meta.totalPages}
@@ -28,7 +30,7 @@ export function Pagination({
         disabled={meta.page >= meta.totalPages}
         className="btn-secondary !px-3 !py-1.5 disabled:opacity-30"
       >
-        Next
+        {localize("Next")}
       </button>
     </div>
   );
